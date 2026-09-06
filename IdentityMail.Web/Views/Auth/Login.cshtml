@@ -1,0 +1,14 @@
+﻿@model LoginDto
+@{
+    ViewData["Title"] = "Login";
+}
+<form method="post">
+    <label asp-for="Email">E Posta</label>
+    <input type="email" asp-for="Email" class="form-control"/>
+    <br />
+    <label asp-for="Password">Şifre</label>
+    <input type="password" asp-for="Password" class="form-control" />
+    <br />
+    <span class="text-danger">@Html.ValidationSummary()</span>
+    <button class="btn btn-outline-dark">Giriş Yap</button>
+</form>

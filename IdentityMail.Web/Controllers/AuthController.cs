@@ -5,7 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityMail.Web.Controllers
 {
-    public class AuthController(UserManager<AppUser> _userManager) : Controller
+    public class AuthController(UserManager<AppUser> _userManager,
+                                SignInManager<AppUser> _signInManager) : Controller
     {
         public IActionResult Register()
         {
@@ -31,10 +32,36 @@ namespace IdentityMail.Web.Controllers
             {
                 foreach (var error in result.Errors)
                 {
-                    ModelState.AddModelError(error.Code,error.Description);
+                    ModelState.AddModelError(error.Code, error.Description);
                 }
                 return View(registerDto);
             }
+            return RedirectToAction("Login");
+        }
+        public IActionResult Login()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginDto loginDto)
+        {
+            var user = await _userManager.FindByEmailAsync(loginDto.Email);
+            if (user == null)
+            {
+                ModelState.AddModelError(string.Empty, "Bu e posta sistemde kayıtlı değil");
+                return View(loginDto);
+            }
+            var result = await _signInManager.PasswordSignInAsync(user, loginDto.Password, false, false);
+            if (!result.Succeeded)
+            {
+                ModelState.AddModelError(string.Empty, "Email veya şifre hatalı");
+                return View(loginDto);
+            }
+            return RedirectToAction("Index","Message");
+        }
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
             return RedirectToAction("Login");
         }
     }
