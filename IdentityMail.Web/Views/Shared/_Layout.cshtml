@@ -526,38 +526,26 @@
                     </div>
                 </a>
 
-                <div class="nav-category-title mt-2">Organizasyon</div>
+                
 
                 <!-- 8. Kategoriler -->
                 @if(User.IsInRole("Admin")){
+                    <div class="nav-category-title mt-2">Admin Link</div>
                     <a href="/Category/Index" class="sidebar-nav-item">
                         <div class="d-flex align-items-center">
                             <i class="bi bi-tags"></i>
                             <span class="">Kategoriler</span>
                         </div>
-                        <span class="badge bg-light text-secondary border px-2">Etiketler</span>
+                        <span class="badge bg-light text-secondary border px-2">Admin</span>
                     </a>
                     <a href="/Admin/Index" class="sidebar-nav-item">
                         <div class="d-flex align-items-center">
                             <i class="bi bi-tags"></i>
                             <span class="">İstatistik</span>
                         </div>
-                        <span class="badge bg-light text-secondary border px-2">Etiketler</span>
+                        <span class="badge bg-light text-secondary border px-2">Admin</span>
                     </a>
                 }
-            </div>
-
-            <!-- Alt Profil Bölümü -->
-            <div class="sidebar-footer">
-                <a href="#profil" class="user-profile-snippet">
-                    <div class="user-avatar">
-                        <span class="">BK</span>
-                    </div>
-                    <div class="overflow-hidden">
-                        <div class="user-meta-name text-truncate">Barış Korkmaz</div>
-                        <div class="user-meta-email text-truncate">baris@identitymail.com</div>
-                    </div>
-                </a>
             </div>
         </aside>
 
