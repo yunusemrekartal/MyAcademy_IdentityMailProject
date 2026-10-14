@@ -74,3 +74,17 @@ Uygulama ilk açıldığında `DbSeeder` sınıfı `Admin` ve `User` rollerini v
 |---|---|
 | E-posta | `admin@identitymail.com` |
 | Şifre | `Admin123!` |
+
+## Ekran Görüntüleri
+<img width="1532" height="728" alt="1-anaSayfa" src="https://github.com/user-attachments/assets/7c18b7aa-cdf4-4329-8b74-322203eaf46a" />
+<img width="1535" height="728" alt="4-gelenKutusu" src="https://github.com/user-attachments/assets/ced9539d-8346-4e9c-ab57-08d75d8158bb" />
+<img width="1535" height="731" alt="5-kullaniciProfil" src="https://github.com/user-attachments/assets/4558daf8-88b5-488b-be47-e18b46bf129e" />
+<img width="1535" height="725" alt="6-kategoriler" src="https://github.com/user-attachments/assets/9d027000-af6d-40a7-9d81-05c6457187cf" />
+<img width="1535" height="730" alt="7-istatistik" src="https://github.com/user-attachments/assets/9e6438b0-c7fd-4ab7-ab6f-7da21d2240bb" />
+<img width="1283" height="463" alt="8-mailDetay" src="https://github.com/user-attachments/assets/a6ef9e38-400f-42d7-bd0a-d8e04760a4f6" />
+
+
+
+
+
+
