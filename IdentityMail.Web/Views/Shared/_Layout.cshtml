@@ -480,7 +480,15 @@
                         <i class="bi bi-person-circle"></i>
                         <span class="">Kullanıcı Profili</span>
                     </div>
-                    <span class="nav-badge nav-badge-subtle">Rol: User</span>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <span class="nav-badge nav-badge-subtle">Rol: Admin</span>
+                    }
+                    else
+                    {
+                        <span class="nav-badge nav-badge-subtle">Rol: User</span>
+                    }
+                    
                 </a>
 
                 <div class="nav-category-title mt-2">Mesaj Kutuları</div>
