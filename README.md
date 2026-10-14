@@ -4,7 +4,7 @@ ASP.NET Core MVC ve ASP.NET Core Identity ile geliştirilmiş, kullanıcıların
 ### Kullanıcı
 - Kayıt olma, giriş yapma ve çıkış yapma
 - Türkçe hata mesajları (özelleştirilmiş `IdentityErrorDescriber`)
-- **Gelen kutusu:** okundu/okunmadı filtreleme ve sayfalama
+- **Gelen kutusu:** okundu/okunmadı filtreleme
 - **Gönderilenler** ve **Taslaklar** listeleri
 - Mesaj yazma, taslağa kaydetme ve taslağı düzenleyip gönderme
 - Mesajı önemli olarak işaretleme
