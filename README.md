@@ -14,7 +14,6 @@ ASP.NET Core MVC ve ASP.NET Core Identity ile geliştirilmiş, kullanıcıların
 - Profil yönetimi: kullanıcı bilgilerini güncelleme ve şifre değiştirme
 ### Yönetici (Admin)
 - Kullanıcı listesi ve her kullanıcının gönderdiği mesaj sayısı
-- Mesaj istatistikleri
 - Kategori yönetimi: ekleme, aktif/pasif yapma (pasif kategoriler yeni mesajlarda seçilemez, eski mesajlarda görünmeye devam eder)
 
 ## Kullanılan Teknolojiler
@@ -27,7 +26,7 @@ ASP.NET Core MVC ve ASP.NET Core Identity ile geliştirilmiş, kullanıcıların
 
 ## Güvenlik Notları
  
-- Kimlik doğrulama için cookie tabanlı Identity kullanılır; `SecurityStamp` her istekte doğrulanır.
+- Kimlik doğrulama için cookie tabanlı Identity kullanılır.
 - Controller'lar `[Authorize(Roles = "...")]` ile korunur. Yönetim sayfalarına yalnızca `Admin` rolü erişebilir.
 - Formlar DTO'lar üzerinden bağlanır; böylece fazla veri gönderimi (over-posting) engellenir.
 - Yönlendirmelerde `returnUrl` için `Url.IsLocalUrl` kontrolü yapılır (open redirect koruması).
