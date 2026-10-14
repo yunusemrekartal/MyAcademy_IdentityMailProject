@@ -1,0 +1,59 @@
+﻿@model string 
+<div class="col-12 col-lg-4 col-xl-3">
+    <div class="card card-identity p-4 text-center mb-4">
+        <!-- Avatar Preview Area -->
+        <div class="position-relative d-inline-block mx-auto mb-3" data-purpose="avatar-display">
+            <img class="avatar-circle rounded-circle d-flex align-items-center justify-content-center shadow-sm mx-auto" id="previewImg" src="@Model" alt="Profil Resmi">
+
+        </div>
+        <h2 class="h5 fw-bold mb-0 text-slate-800">@ViewBag.FirstName @ViewBag.LastName</h2>
+        <p class="text-muted small mb-2">@ViewBag.Email</p>
+        <div class="d-flex justify-content-center gap-2 mb-3">
+            <span class="badge subtle-badge-success rounded-pill px-2.5 py-1 text-xs font-semibold">
+                <i class="bi bi-circle-fill me-1" style="font-size: 0.5rem"></i>Aktif Kullanıcı
+            </span>
+            <span class="badge bg-slate-100 text-slate-600 rounded-pill px-2.5 py-1 text-xs">
+                Rol: Geliştirici
+            </span>
+        </div>
+        <!-- Avatar Action Buttons -->
+        <div class="d-grid gap-2 pt-2 border-top">
+            <form method="post" enctype="multipart/form-data" action="/UserProfile/ProfileImageSaveChanges">
+                <!-- Sunucuya "kaldırıldı mı" bilgisini taşıyan gizli input -->
+                <input type="hidden" name="removePhoto" id="removePhotoInput" value="false">
+                <!-- Tarayıcıdan seçilen resmi saklayan input -->
+                <input type="file" name="profileImage" id="fileInput" accept="image/*" style="display:none" onchange="previewImage(event)">
+                <label class="btn btn-outline-primary btn-sm rounded-lg d-flex align-items-center justify-content-center gap-2" for="fileInput">
+                    <i class="bi bi-upload"></i> Fotoğraf Yükle
+                </label>
+                <!-- Seçilen fotoğrafı kaldıran buton -->
+                <button class="btn btn-outline-danger btn-sm rounded-lg d-flex align-items-center justify-content-center gap-2 w-100 mt-2" type="button" onclick="removeProfilePhoto()">
+                    <i class="bi bi-trash3 me-1"></i> Fotoğrafı Kaldır
+                </button>
+                <!-- Formu gönderen buton -->
+                <button type="submit" class="btn btn-outline-success w-100 mt-2">Değişiklikleri Kaydet</button>
+                @* <input name="__RequestVerificationToken" type="hidden" value="CfDJ8Df4jqlCKxJGiPji-gOgJ8_entTHKtpbGf8YbkubsFIhM9aIyIm0Ne4zBVj1g9lL0aB1ATtEo1VFHR0z-5M6ER1oVnzeRBjS-EDMVtATj3ftwdA68C7_jLCS2U28tuEjNcNTLnKxMpsY2-3pU9U7Ico6-kP3nsPYUz2KdwVwyV_c-y8TEBJfhz9uAwyKfu0yYQ"> *@
+            </form>
+        </div>
+    </div>
+    <!-- Quick Stats Card -->
+    <div class="card card-identity p-3" data-purpose="account-summary-stats">
+        <h3 class="text-xs text-uppercase fw-bold text-slate-400 tracking-wider mb-3 px-1">
+            Hesap Özeti
+        </h3>
+        <ul class="list-unstyled mb-0 d-flex flex-column gap-3 text-sm">
+            <li class="d-flex justify-content-between align-items-center">
+                <span class="text-muted"><i class="bi bi-calendar3 me-2"></i>Üyelik Tarihi:</span>
+                <span class="fw-semibold text-slate-700">12 Ekim 2023</span>
+            </li>
+            <li class="d-flex justify-content-between align-items-center">
+                <span class="text-muted"><i class="bi bi-send-check me-2"></i>Toplam İletilen:</span>
+                <span class="badge bg-slate-100 text-slate-700 px-2 py-1 rounded">45 İleti</span>
+            </li>
+            <li class="d-flex justify-content-between align-items-center">
+                <span class="text-muted"><i class="bi bi-fingerprint me-2"></i>2FA Doğrulama:</span>
+                <span class="badge subtle-badge-success rounded-pill px-2 py-0.5">Aktif</span>
+            </li>
+        </ul>
+    </div>
+</div>

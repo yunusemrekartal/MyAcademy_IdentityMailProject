@@ -1,14 +1,203 @@
 ﻿@model LoginDto
 @{
     ViewData["Title"] = "Login";
+    Layout = null;
 }
-<form method="post">
-    <label asp-for="Email">E Posta</label>
-    <input type="email" asp-for="Email" class="form-control"/>
-    <br />
-    <label asp-for="Password">Şifre</label>
-    <input type="password" asp-for="Password" class="form-control" />
-    <br />
-    <span class="text-danger">@Html.ValidationSummary()</span>
-    <button class="btn btn-outline-dark">Giriş Yap</button>
-</form>
+<!DOCTYPE html>
+
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>IdentityMail - Giriş Yap</title>
+    <!-- Google Fonts: Inter & JetBrains Mono -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet" />
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <style>
+            :root {
+                --bs-primary: #4F46E5;
+                --bs-primary-rgb: 79, 70, 229;
+                --bs-body-font-family: 'Inter', sans-serif;
+            }
+
+            body {
+                background-color: #f8f9fc;
+                color: #0b1c30;
+                font-family: 'Inter', sans-serif;
+                min-height: 100vh;
+            }
+
+            .btn-primary {
+                background-color: #4F46E5;
+                border-color: #4F46E5;
+            }
+
+                .btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+                    background-color: #4338CA !important;
+                    border-color: #4338CA !important;
+                }
+
+            .btn-outline-primary {
+                color: #4F46E5;
+                border-color: #4F46E5;
+            }
+
+                .btn-outline-primary:hover, .btn-outline-primary:focus, .btn-outline-primary:active {
+                    background-color: #4F46E5;
+                    border-color: #4F46E5;
+                    color: #ffffff;
+                }
+
+            .text-primary {
+                color: #4F46E5 !important;
+            }
+
+            .form-control:focus {
+                border-color: #4F46E5;
+                box-shadow: 0 0 0 0.25rem rgba(79, 70, 229, 0.15);
+            }
+
+            .form-check-input:checked {
+                background-color: #4F46E5;
+                border-color: #4F46E5;
+            }
+
+            .font-monospace {
+                font-family: 'JetBrains Mono', monospace !important;
+            }
+
+            .login-card {
+                max-width: 440px;
+                width: 100%;
+            }
+
+            .input-icon-wrapper {
+                position: relative;
+            }
+
+            .input-icon-left {
+                position: absolute;
+                left: 1rem;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #94a3b8;
+                z-index: 4;
+                pointer-events: none;
+            }
+
+            .input-icon-right {
+                position: absolute;
+                right: 0.75rem;
+                top: 50%;
+                transform: translateY(-50%);
+                z-index: 4;
+            }
+
+            .form-control-with-icon-left {
+                padding-left: 2.75rem;
+            }
+
+            .form-control-with-icon-right {
+                padding-right: 2.75rem;
+            }
+    </style>
+</head>
+<body class="d-flex flex-column justify-content-between min-vh-100">
+    <!-- Header Navbar -->
+    <nav class="navbar navbar-expand-lg bg-white border-bottom border-light-subtle py-3">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center text-decoration-none" href="/Home/Index">
+                <img alt="IdentityMail" class="me-2 rounded-2" height="32" src="~/HomePage/home-icon.png" width="32" />
+                <span class="fw-bold fs-5 text-dark">IdentityMail</span>
+            </a>
+            <div class="d-flex align-items-center">
+                <a class="btn btn-link text-decoration-none text-secondary me-2" href="/Home/Index">Ana Sayfa</a>
+                <a class="btn btn-outline-primary btn-sm rounded-pill px-3" href="/Auth/Register">Kayıt Ol</a>
+            </div>
+        </div>
+    </nav>
+    <!-- Main Content Area -->
+    <main class="flex-grow-1 d-flex align-items-center justify-content-center py-5 px-3">
+        <div class="login-card mx-auto">
+            <!-- Login Card -->
+            <div class="card shadow-sm border-0 rounded-4 mx-auto overflow-hidden bg-white">
+                <div class="card-body p-4 p-sm-5 pb-3">
+                    <!-- Top center logo -->
+                    <div class="d-flex justify-content-center mb-3">
+                        <img alt="Logo" class="rounded-3 shadow-sm" height="48" src="~/HomePage/home-icon.png" width="48" />
+                    </div>
+                    <!-- Protocol badge -->
+                    <div class="text-center mb-2">
+                        <span class="badge rounded-pill bg-primary bg-opacity-10 text-primary px-3 py-2 fw-medium">
+                            <i class="bi bi-shield-lock-fill me-1"></i> Güvenli Kimlik Protokolü
+                        </span>
+                    </div>
+                    <!-- Title & Subtitle -->
+                    <h1 class="h3 fw-bold text-center text-dark mb-1">Tekrar Hoş Geldiniz</h1>
+                    <p class="text-center text-muted small mb-4">Hesabınıza giriş yaparak mesajlarınızı kontrol edin.</p>
+                    <!-- Login Form -->
+                    <form method="post">
+                        <!-- Email Input -->
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label class="form-label fw-medium small text-dark mb-0" for="email">E-posta Adresi</label>
+                                <span class="text-secondary opacity-75 font-monospace" style="font-size: 0.75rem;">v2.4 pki</span>
+                            </div>
+                            <div class="input-icon-wrapper">
+                                <i class="bi bi-envelope input-icon-left fs-6"></i>
+                                <input class="form-control form-control-lg rounded-3 fs-6 py-2 form-control-with-icon-left" id="email" placeholder="ornek@identitymail.com" required="" type="email" asp-for="Email"/>
+                            </div>
+                        </div>
+                        <!-- Password Input -->
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label class="form-label fw-medium small text-dark mb-0" for="password">Şifre</label>
+                                <a class="text-decoration-none text-primary small fw-medium" href="#">Şifremi Unuttum</a>
+                            </div>
+                            <div class="input-icon-wrapper">
+                                <i class="bi bi-lock input-icon-left fs-6"></i>
+                                <input class="form-control form-control-lg rounded-3 fs-6 py-2 form-control-with-icon-left form-control-with-icon-right" id="password" placeholder="••••••••" required="" type="password" asp-for="Password"/>
+                                <button aria-label="Şifreyi Göster" class="btn btn-link input-icon-right text-secondary p-0 border-0 shadow-none" onclick="const p = document.getElementById('password'); const icon = this.querySelector('i'); if (p.type === 'password') { p.type = 'text'; icon.className = 'bi bi-eye-slash fs-6'; } else { p.type = 'password'; icon.className = 'bi bi-eye fs-6'; }" type="button">
+                                    <i class="bi bi-eye fs-6"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <span class="text-danger">@Html.ValidationSummary()</span>
+                        <!-- Submit Button -->
+                        <button class="btn btn-primary w-100 py-2 rounded-3 fw-semibold mt-4" type="submit">
+                            Giriş Yap <i class="bi bi-arrow-right ms-1"></i>
+                        </button>
+                    </form>
+                </div>
+                <!-- Card Footer -->
+                <div class="card-footer bg-transparent border-0 text-center py-3">
+                    <span class="small text-muted">Hesabınız yok mu? </span>
+                    <a class="small text-primary fw-semibold text-decoration-none" href="/Auth/Register">Hemen Kayıt Ol →</a>
+                </div>
+            </div>
+            <!-- Security Trust Badges -->
+            <div class="text-center mt-4 text-muted small">
+                <i class="bi bi-shield-check text-primary me-1"></i> 256-bit uçtan uca şifreli ve güvenli oturum<br />
+                <span class="text-secondary font-monospace" style="font-size: 0.75rem;">SHA-256 • ED25519 • Zero-Knowledge</span>
+            </div>
+        </div>
+    </main>
+    <!-- Clean Minimal Footer -->
+    <footer class="border-top py-3 text-secondary small bg-white mt-auto">
+        <div class="container d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <p class="mb-0 text-secondary">© 2025 IdentityMail Inc. End-to-end cryptographic trust.</p>
+            <ul class="nav">
+                <li class="nav-item"><a class="nav-link px-2 text-secondary" href="#">Gizlilik</a></li>
+                <li class="nav-item"><a class="nav-link px-2 text-secondary" href="#">Kullanım Şartları</a></li>
+                <li class="nav-item"><a class="nav-link px-2 text-secondary" href="#">Güvenlik Protokolleri</a></li>
+            </ul>
+        </div>
+    </footer>
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body></html>

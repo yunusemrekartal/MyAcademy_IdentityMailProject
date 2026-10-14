@@ -15,8 +15,16 @@ namespace IdentityMail.Web.Context
             builder.Entity<AppUser>().HasMany(message => message.SentMessages).WithOne(s => s.Sender).HasForeignKey(x => x.SenderId).OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<AppUser>().HasMany(message => message.ReceivedMessages).WithOne(s => s.Receiver).HasForeignKey(x => x.ReceiverId).OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<UserMessage>()
+            .HasOne(m => m.Category)
+            .WithMany(c => c.Messages)
+            .HasForeignKey(m => m.CategoryId)
+            .OnDelete(DeleteBehavior.Restrict);
+
             base.OnModelCreating(builder);
         }
         public DbSet<UserMessage> UserMessages { get; set; }
+        public DbSet<MessageCategory> MessageCategories { get; set; }
     }
 }

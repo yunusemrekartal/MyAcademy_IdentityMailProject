@@ -1,0 +1,111 @@
+﻿@model List<UserMessage>
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IdentityMail Gönderilen Mesajlar (@@RenderBody())</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+  <style>
+    .read-check-double-blue {
+      color: #0284c7;
+      font-size: 1.15rem;
+    }
+    .read-check-single-gray {
+      color: #94a3b8;
+      font-size: 1.15rem;
+    }
+    .text-truncate-custom {
+      max-width: 320px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .table-hover tbody tr:hover {
+      background-color: #f1f5f9;
+      transition: background-color 0.15s ease-in-out;
+    }
+    .btn-detail {
+      transition: all 0.2s ease;
+    }
+    .btn-detail:hover {
+      background-color: #4f46e5;
+      color: #ffffff !important;
+      border-color: #4f46e5;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- @@RenderBody() Gönderilen Mesajlar İçerik Alanı -->
+  <div class="card border-0 shadow-sm rounded-3 overflow-hidden">
+    <div class="table-responsive">
+      @if (true)
+      {
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light border-bottom text-uppercase text-secondary" style="font-size: 0.78rem; letter-spacing: 0.5px;">
+                <tr>
+                <th scope="col" class="py-3 px-3 text-center" style="width: 70px;">Durum</th>
+                <th scope="col" class="py-3 px-3" style="width: 24%;">Konu</th>
+                <th scope="col" class="py-3 px-3">İçerik</th>
+                <th scope="col" class="py-3 px-3">Alıcı Mail</th>
+                <th scope="col" class="py-3 px-3" style="width: 130px;">Kategori</th>
+                <th scope="col" class="py-3 px-3" style="width: 140px;">Tarih</th>
+                <th scope="col" class="py-3 px-3 text-end" style="width: 130px;">İşlem</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y">
+                @foreach(var msg in Model)
+                {
+                    <!-- Satır 1: Okundu (Mavi Çift Tik) -->
+                    <tr>
+                    <td class="text-center py-3 px-3" title="Okundu">
+                        <i class="bi bi-check2-all @(msg.IsRead==true?"read-check-blue":"read-check-gray")" aria-label="@(msg.IsRead==true?"Okundu":"Okunmadı")"></i>
+                    </td>
+                    <td class="py-3 px-3">
+                        <span class="fw-semibold text-dark">@msg.Subject</span>
+                    </td>
+                    <td class="py-3 px-3 text-muted">
+                        <div class="text-truncate-custom">
+                        @(msg.Body.Length > 58 ? msg.Body.Substring(0, 58) + "..." : msg.Body)
+                        </div>
+                    </td>
+                    <td class="py-3 px-3 text-muted">
+                        @msg.Receiver.Email
+                    </td>
+                    @if(msg.CategoryId!=null)
+                    {
+                        <td class="py-3 px-3">
+                            <span class="badge bg-info-subtle text-info-emphasis rounded-pill px-2.5 py-1.5 fw-medium">@msg.Category.Name</span>
+                        </td>
+                    }
+                    else
+                    {
+                        <td class="py-3 px-3">
+                            <span class="badge bg-info-subtle text-info-emphasis rounded-pill px-2.5 py-1.5 fw-medium">Kategorisiz</span>
+                        </td>
+                    }
+                    <td class="py-3 px-3 text-secondary small">
+                        @msg.SendDate
+                    </td>
+                    <td class="py-3 px-3 text-end">
+                        <a href="/Message/MailDetail/@msg.Id" class="btn btn-sm btn-outline-secondary btn-detail rounded-2 px-2.5 py-1 text-decoration-none">
+                        <i class="bi bi-eye me-1"></i>Detay
+                        </a>
+                    </td>
+                    </tr>
+                }
+            </tbody>
+            </table>
+      }
+    </div>
+  </div>
+
+  <!-- Bootstrap 5 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

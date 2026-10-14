@@ -1,27 +1,333 @@
 ﻿@model RegisterDto
 @{
     ViewData["Title"] = "Register";
+    Layout = null;
 }
-<h1>Kayıt Formu</h1>
-<form method="post">
-    <label asp-for="FirstName">Ad</label>
-    <input type="type" asp-for="FirstName" class="form-control"/>
-    <br />
-    <label asp-for="LastName">Soyad</label>
-    <input type="type" asp-for="LastName" class="form-control" />
-    <br />
-    <label asp-for="Email">E Posta</label>
-    <input type="email" asp-for="Email" class="form-control" />
-    <br />
-    <label asp-for="UserName">Kullanıcı Adı</label>
-    <input type="type" asp-for="UserName" class="form-control" />
-    <br />
-    <label asp-for="Password">Şifre</label>
-    <input type="password" asp-for="Password" class="form-control" />
-    <br />
-    <label asp-for="ConfirmPassword">Şifre Tekrar</label>
-    <input type="password" asp-for="ConfirmPassword" class="form-control" />
-    <br />
-    <span class="text-danger">@Html.ValidationSummary()</span>
-    <button class="btn btn-outline-dark">Kayıt Ol</button>
-</form>
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IdentityMail - Kayıt Ol</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+            :root {
+                --primary-color: #4F46E5;
+                --primary-hover: #4338CA;
+                --heading-color: #0F172A;
+                --text-muted: #64748B;
+                --bg-surface: #F8FAFC;
+                --border-color: #E2E8F0;
+            }
+
+            body {
+                font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+                background-color: var(--bg-surface);
+                color: #334155;
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+            }
+
+            .brand-logo-badge {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 52px;
+                height: 52px;
+                background: linear-gradient(135deg, #4F46E5, #6366F1);
+                border-radius: 14px;
+                box-shadow: 0 8px 16px rgba(79, 70, 229, 0.2);
+                color: #ffffff;
+                font-size: 24px;
+            }
+
+            .register-card {
+                max-width: 540px;
+                width: 100%;
+                background: #ffffff;
+                border: 1px solid rgba(226, 232, 240, 0.8);
+                border-radius: 24px;
+                box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.05), 0 4px 12px -2px rgba(15, 23, 42, 0.03);
+            }
+
+            .protocol-badge {
+                background-color: #EEF2FF;
+                color: #4F46E5;
+                font-size: 0.76rem;
+                font-weight: 600;
+                padding: 0.35rem 0.85rem;
+                border-radius: 50rem;
+                display: inline-flex;
+                align-items: center;
+                gap: 5px;
+            }
+
+            .form-label {
+                font-size: 0.84rem;
+                font-weight: 500;
+                color: #334155;
+                margin-bottom: 0.35rem;
+            }
+
+            .input-group-text {
+                background-color: #ffffff;
+                border-color: var(--border-color);
+                color: #94A3B8;
+                border-radius: 10px 0 0 10px;
+                padding-left: 0.9rem;
+                padding-right: 0.75rem;
+            }
+
+            .form-control {
+                border-color: var(--border-color);
+                border-radius: 10px;
+                font-size: 0.88rem;
+                padding: 0.62rem 0.9rem;
+                color: #1E293B;
+            }
+
+            .input-group .form-control {
+                border-radius: 0 10px 10px 0;
+            }
+
+                .input-group .form-control.with-toggle {
+                    border-radius: 0;
+                }
+
+            .input-group .btn-password-toggle {
+                border-color: var(--border-color);
+                background-color: #ffffff;
+                color: #94A3B8;
+                border-radius: 0 10px 10px 0;
+            }
+
+                .input-group .btn-password-toggle:hover {
+                    color: #475569;
+                    background-color: #F8FAFC;
+                }
+
+            .form-control:focus {
+                border-color: #818CF8;
+                box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+            }
+
+            .btn-submit {
+                background-color: var(--primary-color);
+                border-color: var(--primary-color);
+                color: #ffffff;
+                font-weight: 600;
+                font-size: 0.95rem;
+                padding: 0.7rem;
+                border-radius: 12px;
+                transition: all 0.2s ease;
+                box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+            }
+
+                .btn-submit:hover {
+                    background-color: var(--primary-hover);
+                    border-color: var(--primary-hover);
+                    transform: translateY(-1px);
+                    box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35);
+                    color: #ffffff;
+                }
+
+            .btn-nav-outline {
+                border-color: #CBD5E1;
+                color: #334155;
+                font-weight: 500;
+                border-radius: 50rem;
+                padding: 0.4rem 1.1rem;
+                font-size: 0.88rem;
+            }
+
+                .btn-nav-outline:hover {
+                    border-color: #4F46E5;
+                    color: #4F46E5;
+                    background-color: #EEF2FF;
+                }
+
+            .badge-label-right {
+                font-size: 0.72rem;
+                color: #94A3B8;
+                font-family: monospace;
+            }
+
+            .password-helper {
+                font-size: 0.75rem;
+                color: #64748B;
+                margin-top: 0.25rem;
+            }
+    </style>
+</head>
+<body>
+
+    <!-- Üst Navigasyon -->
+    <header class="py-3 px-4 px-md-5 bg-white border-bottom border-light-subtle">
+        <div class="container-fluid d-flex align-items-center justify-content-between p-0">
+            <a href="/Home/Index" class="d-flex align-items-center gap-2 text-decoration-none text-dark">
+                <div class="d-flex align-items-center justify-content-center bg-primary text-white rounded-3" style="width: 34px; height: 34px; background-color: #4F46E5 !important;">
+                    <i class="bi bi-envelope-fill fs-6"></i>
+                </div>
+                <span class="fs-5 fw-bold text-slate-900" style="color: #0F172A; letter-spacing: -0.02em;">IdentityMail</span>
+            </a>
+            <div class="d-flex align-items-center gap-3">
+                <a href="/Home/Index" class="text-decoration-none text-secondary fs-6 d-none d-sm-inline">Ana Sayfa</a>
+                <a href="/Auth/Login" class="btn btn-nav-outline">Giriş Yap</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Ana Kayıt Formu -->
+    <main class="container py-4 my-auto d-flex justify-content-center">
+        <div class="register-card p-4 p-md-5">
+            <div class="text-center mb-4">
+                <div class="brand-logo-badge mb-3">
+                    <i class="bi bi-envelope-check"></i>
+                </div>
+                <div>
+                    <span class="protocol-badge mb-2">
+                        <i class="bi bi-shield-lock-fill"></i> Güvenli Kimlik Protokolü
+                    </span>
+                </div>
+                <h1 class="h3 fw-bold mt-2 mb-1" style="color: #0F172A; letter-spacing: -0.02em;">Hesap Oluştur</h1>
+                <p class="text-muted small mb-0">Uçtan uca şifreli mesajlaşma ağına saniyeler içinde katılın.</p>
+            </div>
+
+            <form method="post">
+                <!-- Ad ve Soyad (Yan Yana) -->
+                <div class="row g-3 mb-3">
+                    <div class="col-sm-6">
+                        <label class="form-label" for="firstName">Ad</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-person"></i></span>
+                            <input type="text" class="form-control" id="firstName" placeholder="Adınız" required asp-for="FirstName">
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="form-label" for="lastName">Soyad</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-person"></i></span>
+                            <input type="text" class="form-control" id="lastName" placeholder="Soyadınız" required asp-for="LastName">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kullanıcı Adı -->
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <label class="form-label" for="username">Kullanıcı Adı</label>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-at"></i></span>
+                        <input type="text" class="form-control" id="username" placeholder="kullaniciadi" required asp-for="UserName">
+                    </div>
+                </div>
+
+                <!-- E-posta Adresi -->
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <label class="form-label" for="email">E-posta Adresi</label>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                        <input type="email" class="form-control" id="email" placeholder="ornek@identitymail.com" required asp-for="Email">
+                    </div>
+                </div>
+
+                <!-- Şifre ve Şifre Tekrar (Yan Yana) -->
+                <div class="row g-3 mb-3">
+                    <div class="col-sm-6">
+                        <label class="form-label" for="password">Şifre</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                            <input type="password" class="form-control with-toggle" id="password" placeholder="••••••••" required asp-for="Password">
+                            <button class="btn btn-password-toggle border" type="button" onclick="togglePass('password', this)">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="form-label" for="confirmPassword">Şifre Tekrar</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-shield-check"></i></span>
+                            <input type="password" class="form-control with-toggle" id="confirmPassword" placeholder="••••••••" required asp-for="ConfirmPassword">
+                            <button class="btn btn-password-toggle border" type="button" onclick="togglePass('confirmPassword', this)">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Şartlar ve Onay -->
+                <div class="form-check mb-4">
+                    <input class="form-check-input" type="checkbox" id="termsCheck" required checked>
+                    <label class="form-check-label small text-muted" for="termsCheck">
+                        <a href="#" class="text-decoration-none text-primary" style="color: #4F46E5 !important;">Kullanım Şartları</a> ve <a href="#" class="text-decoration-none text-primary" style="color: #4F46E5 !important;">Gizlilik Politikası</a>'nı kabul ediyorum.
+                    </label>
+                </div>
+                <span class="text-danger">@Html.ValidationSummary()</span>
+                <!-- Kayıt Ol Butonu -->
+                <button type="submit" class="btn btn-submit w-100 mb-3 d-flex align-items-center justify-content-center gap-2">
+                    <span>Kayıt Ol</span>
+                    <i class="bi bi-arrow-right"></i>
+                </button>
+
+                <!-- Giriş Yap Linki -->
+                <div class="text-center pt-2">
+                    <span class="text-muted small">Zaten hesabınız var mı?</span>
+                    <a href="/Auth/Login" class="text-decoration-none fw-semibold small ms-1" style="color: #4F46E5;">
+                        Giriş Yap <i class="bi bi-arrow-right-short"></i>
+                    </a>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- Alt Rozet & Footer Bilgisi -->
+    <div class="text-center pb-2">
+        <div class="d-inline-flex align-items-center gap-2 text-muted small">
+            <i class="bi bi-shield-check text-primary" style="color: #4F46E5 !important;"></i>
+            <span>256-bit uçtan uca şifreli ve güvenli kayıt</span>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="py-3 px-4 px-md-5 bg-white border-top border-light-subtle">
+        <div class="container-fluid d-flex flex-column flex-md-row align-items-center justify-content-between text-muted small p-0 gap-2">
+            <div>
+                © 2025 IdentityMail Inc. End-to-end cryptographic trust.
+            </div>
+            <div class="d-flex gap-3">
+                <a href="#" class="text-decoration-none text-muted">Gizlilik</a>
+                <a href="#" class="text-decoration-none text-muted">Kullanım Şartları</a>
+                <a href="#" class="text-decoration-none text-muted">Güvenlik Protokolleri</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+            function togglePass(inputId, btn) {
+              const input = document.getElementById(inputId);
+              const icon = btn.querySelector('i');
+              if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+              } else {
+                input.type = 'password';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+              }
+            }
+    </script>
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

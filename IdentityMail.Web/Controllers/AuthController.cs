@@ -36,6 +36,7 @@ namespace IdentityMail.Web.Controllers
                 }
                 return View(registerDto);
             }
+            await _userManager.AddToRoleAsync(user, "User");
             return RedirectToAction("Login");
         }
         public IActionResult Login()
@@ -51,13 +52,13 @@ namespace IdentityMail.Web.Controllers
                 ModelState.AddModelError(string.Empty, "Bu e posta sistemde kayıtlı değil");
                 return View(loginDto);
             }
-            var result = await _signInManager.PasswordSignInAsync(user, loginDto.Password, false, false);
+            var result = await _signInManager.PasswordSignInAsync(user, loginDto.Password, true, false);
             if (!result.Succeeded)
             {
                 ModelState.AddModelError(string.Empty, "Email veya şifre hatalı");
                 return View(loginDto);
             }
-            return RedirectToAction("Index","Message");
+            return RedirectToAction("Index","UserProfile");
         }
         public async Task<IActionResult> Logout()
         {

@@ -1,49 +1,593 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - IdentityMail.Web</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/IdentityMail.Web.styles.css" asp-append-version="true" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IdentityMail - Kullanıcı Paneli</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+
+    <style>
+            :root {
+              --primary: #4F46E5;
+              --primary-hover: #4338CA;
+              --primary-light: #EEF2FF;
+              --primary-border: #E0E7FF;
+              --surface: #F8FAFC;
+              --card-bg: #FFFFFF;
+              --border-color: #E2E8F0;
+              --text-main: #0F172A;
+              --text-muted: #64748B;
+              --sidebar-width: 270px;
+              --topbar-height: 70px;
+            }
+
+            body {
+              font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+              background-color: var(--surface);
+              color: var(--text-main);
+              overflow-x: hidden;
+              min-height: 100vh;
+            }
+
+            /* Sidebar Layout */
+            .app-wrapper {
+              display: flex;
+              min-height: 100vh;
+              width: 100%;
+            }
+
+            .app-sidebar {
+              width: var(--sidebar-width);
+              min-width: var(--sidebar-width);
+              background: var(--card-bg);
+              border-right: 1px solid var(--border-color);
+              display: flex;
+              flex-direction: column;
+              height: 100vh;
+              position: sticky;
+              top: 0;
+              z-index: 1020;
+            }
+
+            .sidebar-header {
+              height: var(--topbar-height);
+              display: flex;
+              align-items: center;
+              padding: 0 1.5rem;
+              border-bottom: 1px solid var(--border-color);
+            }
+
+            .brand-logo-wrap {
+              display: flex;
+              align-items: center;
+              gap: 0.75rem;
+              text-decoration: none;
+              color: var(--text-main);
+            }
+
+            .brand-icon-box {
+              width: 36px;
+              height: 36px;
+              background: var(--primary);
+              border-radius: 10px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              color: #fff;
+              font-size: 1.1rem;
+              box-shadow: 0 4px 10px rgba(79, 70, 229, 0.25);
+            }
+
+            .brand-text {
+              font-weight: 700;
+              font-size: 1.15rem;
+              letter-spacing: -0.02em;
+            }
+
+            /* Action Button (Compose) */
+            .sidebar-compose-wrap {
+              padding: 1.25rem 1.25rem 0.75rem;
+            }
+
+            .btn-compose {
+              background: var(--primary);
+              color: #fff;
+              border: none;
+              padding: 0.75rem 1.25rem;
+              border-radius: 12px;
+              font-weight: 600;
+              font-size: 0.95rem;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              gap: 0.6rem;
+              width: 100%;
+              box-shadow: 0 4px 14px rgba(79, 70, 229, 0.28);
+              transition: all 0.2s ease;
+              text-decoration: none;
+            }
+
+            .btn-compose:hover {
+              background: var(--primary-hover);
+              color: #fff;
+              transform: translateY(-1px);
+              box-shadow: 0 6px 18px rgba(79, 70, 229, 0.35);
+            }
+
+            /* Sidebar Navigation Links */
+            .sidebar-menu {
+              flex: 1;
+              padding: 0.5rem 0.85rem;
+              overflow-y: auto;
+            }
+
+            .nav-category-title {
+              font-size: 0.75rem;
+              font-weight: 700;
+              text-transform: uppercase;
+              letter-spacing: 0.05em;
+              color: var(--text-muted);
+              padding: 0.75rem 0.75rem 0.35rem;
+            }
+
+            .sidebar-nav-item {
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              padding: 0.65rem 0.85rem;
+              border-radius: 10px;
+              color: #334155;
+              text-decoration: none;
+              font-size: 0.92rem;
+              font-weight: 500;
+              margin-bottom: 2px;
+              transition: all 0.15s ease-in-out;
+            }
+
+            .sidebar-nav-item i {
+              font-size: 1.15rem;
+              margin-right: 0.75rem;
+              color: #64748B;
+              transition: color 0.15s ease;
+              width: 22px;
+              text-align: center;
+            }
+
+            .sidebar-nav-item:hover {
+              background-color: var(--surface);
+              color: var(--primary);
+            }
+
+            .sidebar-nav-item:hover i {
+              color: var(--primary);
+            }
+
+            .sidebar-nav-item.active {
+              background-color: var(--primary-light);
+              color: var(--primary);
+              font-weight: 600;
+            }
+
+            .sidebar-nav-item.active i {
+              color: var(--primary);
+            }
+
+            .nav-badge {
+              font-size: 0.72rem;
+              padding: 0.2rem 0.55rem;
+              border-radius: 20px;
+              font-weight: 600;
+            }
+
+            .nav-badge-primary {
+              background: var(--primary);
+              color: #fff;
+            }
+
+            .nav-badge-subtle {
+              background: #E2E8F0;
+              color: #475569;
+            }
+
+            /* Sidebar Footer User Info */
+            .sidebar-footer {
+              padding: 1rem 1.25rem;
+              border-top: 1px solid var(--border-color);
+              background: #fff;
+            }
+
+            .user-profile-snippet {
+              display: flex;
+              align-items: center;
+              gap: 0.75rem;
+              text-decoration: none;
+              color: inherit;
+              padding: 0.5rem;
+              border-radius: 10px;
+              transition: background-color 0.15s ease;
+            }
+
+            .user-profile-snippet:hover {
+              background-color: var(--surface);
+            }
+
+            .user-avatar {
+              width: 40px;
+              height: 40px;
+              border-radius: 10px;
+              background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+              color: white;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-weight: 600;
+              font-size: 0.95rem;
+            }
+
+            .user-meta-name {
+              font-size: 0.88rem;
+              font-weight: 600;
+              line-height: 1.2;
+              color: var(--text-main);
+            }
+
+            .user-meta-email {
+              font-size: 0.75rem;
+              color: var(--text-muted);
+            }
+
+            /* Main Content Area */
+            .app-main {
+              flex: 1;
+              display: flex;
+              flex-direction: column;
+              min-width: 0;
+              background-color: var(--surface);
+            }
+
+            /* Topbar */
+            .app-topbar {
+              height: var(--topbar-height);
+              background: var(--card-bg);
+              border-bottom: 1px solid var(--border-color);
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              padding: 0 2rem;
+              position: sticky;
+              top: 0;
+              z-index: 1010;
+            }
+
+            .topbar-left {
+              display: flex;
+              align-items: center;
+              gap: 1rem;
+            }
+
+            .search-input-group {
+              position: relative;
+              width: 380px;
+            }
+
+            .search-input-group i {
+              position: absolute;
+              left: 1rem;
+              top: 50%;
+              transform: translateY(-50%);
+              color: #94A3B8;
+              font-size: 0.95rem;
+            }
+
+            .search-input-group input {
+              padding-left: 2.6rem;
+              background-color: #F1F5F9;
+              border: 1px solid transparent;
+              border-radius: 10px;
+              font-size: 0.88rem;
+              height: 40px;
+              transition: all 0.2s ease;
+            }
+
+            .search-input-group input:focus {
+              background-color: #fff;
+              border-color: var(--primary);
+              box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+            }
+
+            .topbar-right {
+              display: flex;
+              align-items: center;
+              gap: 0.85rem;
+            }
+
+            .topbar-icon-btn {
+              width: 40px;
+              height: 40px;
+              border-radius: 10px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              border: 1px solid var(--border-color);
+              background: #fff;
+              color: #475569;
+              text-decoration: none;
+              position: relative;
+              transition: all 0.15s ease;
+            }
+
+            .topbar-icon-btn:hover {
+              background-color: #F8FAFC;
+              color: var(--text-main);
+              border-color: #CBD5E1;
+            }
+
+            .notification-dot {
+              position: absolute;
+              top: 9px;
+              right: 9px;
+              width: 8px;
+              height: 8px;
+              background-color: #EF4444;
+              border-radius: 50%;
+              border: 2px solid #fff;
+            }
+
+            /* Logout Button */
+            .btn-logout {
+              display: flex;
+              align-items: center;
+              gap: 0.45rem;
+              padding: 0.5rem 1rem;
+              border-radius: 10px;
+              border: 1px solid #FEE2E2;
+              background: #FEF2F2;
+              color: #DC2626;
+              font-size: 0.88rem;
+              font-weight: 600;
+              text-decoration: none;
+              transition: all 0.15s ease;
+            }
+
+            .btn-logout:hover {
+              background: #FEE2E2;
+              color: #B91C1C;
+              border-color: #FCA5A5;
+              transform: translateY(-1px);
+            }
+
+            /* Razor Layout Body Container (@@RenderBody()) */
+            .app-content-body {
+              padding: 2rem;
+              flex: 1;
+            }
+
+            /* Placeholder / RenderBody Banner & Card */
+            .render-body-wrapper {
+              background: var(--card-bg);
+              border: 1px solid var(--border-color);
+              border-radius: 16px;
+              padding: 2.25rem;
+              box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+            }
+
+            .mvc-badge {
+              font-family: 'JetBrains Mono', monospace;
+              font-size: 0.78rem;
+              background: #EEF2FF;
+              color: #4F46E5;
+              padding: 0.35rem 0.75rem;
+              border-radius: 8px;
+              border: 1px solid #C7D2FE;
+              display: inline-flex;
+              align-items: center;
+              gap: 0.4rem;
+            }
+
+            .code-pill {
+              font-family: 'JetBrains Mono', monospace;
+              background: #F1F5F9;
+              color: #0F172A;
+              padding: 0.2rem 0.5rem;
+              border-radius: 6px;
+              font-size: 0.85rem;
+              border: 1px solid #E2E8F0;
+            }
+
+            .placeholder-content-box {
+              border: 2px dashed #CBD5E1;
+              border-radius: 14px;
+              padding: 3rem 2rem;
+              background: #FAFCFF;
+              text-align: center;
+            }
+
+            .placeholder-icon {
+              width: 64px;
+              height: 64px;
+              border-radius: 50%;
+              background: #EEF2FF;
+              color: #4F46E5;
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 1.8rem;
+              margin-bottom: 1.25rem;
+            }
+
+            /* Section Pills for Next Steps */
+            .menu-route-item {
+              background: #FFFFFF;
+              border: 1px solid #E2E8F0;
+              border-radius: 12px;
+              padding: 0.85rem 1.15rem;
+              display: flex;
+              align-items: center;
+              gap: 0.75rem;
+              font-size: 0.88rem;
+              color: #334155;
+              transition: all 0.2s ease;
+            }
+
+            .menu-route-item:hover {
+              border-color: #4F46E5;
+              box-shadow: 0 4px 12px rgba(79, 70, 229, 0.08);
+              transform: translateY(-2px);
+            }
+
+            .menu-route-item i {
+              font-size: 1.1rem;
+              color: #4F46E5;
+            }
+    </style>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">IdentityMail.Web</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
+
+    <div class="app-wrapper">
+        <!-- SIDEBAR (Layout.cshtml Sol Menü) -->
+        <aside class="app-sidebar">
+            <!-- Header / Logo -->
+            <div class="sidebar-header">
+                <a href="#" class="brand-logo-wrap">
+                    <div class="brand-icon-box">
+                        <i class="bi bi-envelope-fill"></i>
+                    </div>
+                    <span class="brand-text">IdentityMail</span>
+                </a>
+            </div>
+
+            <!-- 2. Yeni Mesaj Oluştur (Hızlı Eylem Butonu) -->
+            <div class="sidebar-compose-wrap">
+                <a href="/Message/SendMail" class="btn-compose">
+                    <i class="bi bi-pencil-square"></i>
+                    <span class="">Yeni Mesaj Oluştur</span>
+                </a>
+            </div>
+
+            <!-- Sidebar Menü Listesi -->
+            <div class="sidebar-menu">
+                <div class="nav-category-title">Hesap &amp; Profil</div>
+                <!-- 1. Kullanıcı Profil Sayfası -->
+                <a href="/UserProfile/Index" class="sidebar-nav-item">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-person-circle"></i>
+                        <span class="">Kullanıcı Profili</span>
+                    </div>
+                    <span class="nav-badge nav-badge-subtle">Rol: User</span>
+                </a>
+
+                <div class="nav-category-title mt-2">Mesaj Kutuları</div>
+
+                <!-- 3. Gelen Kutusu (Varsayılan Aktif) -->
+                <a href="/Message/Index" class="sidebar-nav-item active">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-inbox-fill"></i>
+                        <span class="">Gelen Kutusu</span>
+                    </div>
+                    @await Component.InvokeAsync("UnreadMessageCount")
+                </a>
+
+                <!-- 4. Gönderilenler -->
+                <a href="/Message/SentMessages" class="sidebar-nav-item">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-send"></i>
+                        <span class="">Gönderilenler</span>
+                    </div>
+                </a>
+
+                <!-- 5. Taslaklar -->
+                <a href="/Message/Draft" class="sidebar-nav-item">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-file-earmark-text"></i>
+                        <span class="">Taslaklar</span>
+                    </div>
+                </a>
+
+                <!-- 6. Önemli Mesajlar -->
+                <a href="/Message/ImportantMessages" class="sidebar-nav-item">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-star-fill text-warning"></i>
+                        <span class="">Önemli Mesajlar</span>
+                    </div>
+                </a>
+
+                <!-- 7. Çöp Kutusu -->
+                <a href="/Message/Trash" class="sidebar-nav-item">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-trash3"></i>
+                        <span class="">Çöp Kutusu</span>
+                    </div>
+                </a>
+
+                <div class="nav-category-title mt-2">Organizasyon</div>
+
+                <!-- 8. Kategoriler -->
+                @if(User.IsInRole("Admin")){
+                    <a href="/Category/Index" class="sidebar-nav-item">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-tags"></i>
+                            <span class="">Kategoriler</span>
+                        </div>
+                        <span class="badge bg-light text-secondary border px-2">Etiketler</span>
+                    </a>
+                    <a href="/Admin/Index" class="sidebar-nav-item">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-tags"></i>
+                            <span class="">İstatistik</span>
+                        </div>
+                        <span class="badge bg-light text-secondary border px-2">Etiketler</span>
+                    </a>
+                }
+            </div>
+
+            <!-- Alt Profil Bölümü -->
+            <div class="sidebar-footer">
+                <a href="#profil" class="user-profile-snippet">
+                    <div class="user-avatar">
+                        <span class="">BK</span>
+                    </div>
+                    <div class="overflow-hidden">
+                        <div class="user-meta-name text-truncate">Barış Korkmaz</div>
+                        <div class="user-meta-email text-truncate">baris@identitymail.com</div>
+                    </div>
+                </a>
+            </div>
+        </aside>
+
+        <!-- SAĞ ANA ALAN (Topbar + @@RenderBody()) -->
+        <main class="app-main">
+            <!-- Üst Menü / Topbar -->
+            <header class="app-topbar justify-content-end">
+                <!-- Arama Çubuğu -->
+                <!-- Sağ Taraf: Bildirimler, Güvenlik Durumu ve ÇIKIŞ YAP Butonu -->
+                <div class="topbar-right">
+                    <a href="/Auth/Logout" class="btn-logout" title="Oturumu Sonlandır">
+                        <i class="bi bi-box-arrow-right fs-6"></i>
+                        <span class="">Çıkış Yap</span>
+                    </a>
+                </div>
+            </header>
+
+            <!-- Dinamik İçerik Alanı: Layout.cshtml @@RenderBody() -->
+            <div class="app-content-body">
+                <div class="render-body-wrapper">
+                    @RenderBody()
                 </div>
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - IdentityMail.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
-</body>
-</html>
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+
+
+
+</body></html>

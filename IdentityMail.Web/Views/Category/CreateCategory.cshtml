@@ -1,0 +1,104 @@
+﻿@model CategoryCreate
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IdentityMail Kategori Ekle (@@RenderBody())</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- Inter Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .category-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 6px 16px rgba(15, 23, 42, 0.03);
+      max-width: 640px;
+      margin: 0 auto;
+    }
+    .form-control {
+      border-radius: 10px;
+      border-color: #cbd5e1;
+      padding: 0.75rem 1rem;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+    }
+    .form-control:focus {
+      border-color: #0284c7;
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+    }
+    .form-label {
+      font-weight: 600;
+      color: #1e293b;
+      font-size: 0.925rem;
+      margin-bottom: 0.5rem;
+    }
+    .btn-submit {
+      background-color: #0f172a;
+      border-color: #0f172a;
+      color: #ffffff;
+      font-weight: 600;
+      padding: 0.75rem 1.75rem;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+    }
+    .btn-submit:hover {
+      background-color: #1e293b;
+      border-color: #1e293b;
+      color: #ffffff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+    }
+    .btn-submit:active {
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ASP.NET Core MVC @@RenderBody() İçeriği -->
+  <div class="container-fluid px-0">
+    <div class="category-card p-4 p-md-5">
+      <form method="post">
+        <!-- Kategori Adı Input -->
+        <div class="mb-4">
+          <label for="CategoryName" class="form-label">Kategori Adı</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="CategoryName" 
+            asp-for="CategoryName" 
+            placeholder="Kategori adını giriniz..." 
+            required>
+        </div>
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger alert-dismissible fade show role="alert"">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i> <!-- Bootstrap Icons (isteğe bağlı) -->
+                    <strong>Hata!</strong>
+                </div>
+                <hr class="my-2">
+                <div asp-validation-summary="All" class="mb-0"></div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        <!-- Formu Gönder Butonu -->
+        <div>
+          <button type="submit" class="btn btn-submit">
+            <i class="bi bi-check-lg me-1"></i> Gönder
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

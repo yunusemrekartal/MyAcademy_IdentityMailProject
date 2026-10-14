@@ -1,5 +1,799 @@
 ﻿@model List<UserMessage>
 @{
     ViewData["Title"] = "Index";
+    int currentPage = ViewBag.CurrentPage;
+    int totalPages = ViewBag.TotalPages;
+    int delta = 2;   // mevcut sayfanın SOLUNA ve SAĞINA kaç sayfa gösterilecek
+
+    int startPage = Math.Max(1, currentPage - delta);
+    int endPage = Math.Min(totalPages, currentPage + delta);
 }
-<h1>Merhaba @ViewBag.fullName</h1>
+@functions {
+    string FormatMessageDate(DateTime tarih)
+    {
+        if (tarih.Date == DateTime.Today)
+            return $"Bugün, {tarih:HH:mm}";
+
+        if (tarih.Date == DateTime.Today.AddDays(-1))
+            return $"Dün, {tarih:HH:mm}";
+
+        return tarih.ToString("dd.MM.yyyy, HH:mm");
+    }
+}
+<!DOCTYPE html>
+
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>IdentityMail - Kullanıcı Paneli</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
+    <style>
+            :root {
+                --primary: #4F46E5;
+                --primary-hover: #4338CA;
+                --primary-light: #EEF2FF;
+                --primary-border: #E0E7FF;
+                --surface: #F8FAFC;
+                --card-bg: #FFFFFF;
+                --border-color: #E2E8F0;
+                --text-main: #0F172A;
+                --text-muted: #64748B;
+                --sidebar-width: 270px;
+                --topbar-height: 70px;
+            }
+
+            body {
+                font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+                background-color: var(--surface);
+                color: var(--text-main);
+                overflow-x: hidden;
+                min-height: 100vh;
+            }
+
+            /* Sidebar Layout */
+            .app-wrapper {
+                display: flex;
+                min-height: 100vh;
+                width: 100%;
+            }
+
+            .app-sidebar {
+                width: var(--sidebar-width);
+                min-width: var(--sidebar-width);
+                background: var(--card-bg);
+                border-right: 1px solid var(--border-color);
+                display: flex;
+                flex-direction: column;
+                height: 100vh;
+                position: sticky;
+                top: 0;
+                z-index: 1020;
+            }
+
+            .sidebar-header {
+                height: var(--topbar-height);
+                display: flex;
+                align-items: center;
+                padding: 0 1.5rem;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .brand-logo-wrap {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                text-decoration: none;
+                color: var(--text-main);
+            }
+
+            .brand-icon-box {
+                width: 36px;
+                height: 36px;
+                background: var(--primary);
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #fff;
+                font-size: 1.1rem;
+                box-shadow: 0 4px 10px rgba(79, 70, 229, 0.25);
+            }
+
+            .brand-text {
+                font-weight: 700;
+                font-size: 1.15rem;
+                letter-spacing: -0.02em;
+            }
+
+            /* Action Button (Compose) */
+            .sidebar-compose-wrap {
+                padding: 1.25rem 1.25rem 0.75rem;
+            }
+
+            .btn-compose {
+                background: var(--primary);
+                color: #fff;
+                border: none;
+                padding: 0.75rem 1.25rem;
+                border-radius: 12px;
+                font-weight: 600;
+                font-size: 0.95rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.6rem;
+                width: 100%;
+                box-shadow: 0 4px 14px rgba(79, 70, 229, 0.28);
+                transition: all 0.2s ease;
+                text-decoration: none;
+            }
+
+                .btn-compose:hover {
+                    background: var(--primary-hover);
+                    color: #fff;
+                    transform: translateY(-1px);
+                    box-shadow: 0 6px 18px rgba(79, 70, 229, 0.35);
+                }
+
+            /* Sidebar Navigation Links */
+            .sidebar-menu {
+                flex: 1;
+                padding: 0.5rem 0.85rem;
+                overflow-y: auto;
+            }
+
+            .nav-category-title {
+                font-size: 0.75rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                color: var(--text-muted);
+                padding: 0.75rem 0.75rem 0.35rem;
+            }
+
+            .sidebar-nav-item {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0.65rem 0.85rem;
+                border-radius: 10px;
+                color: #334155;
+                text-decoration: none;
+                font-size: 0.92rem;
+                font-weight: 500;
+                margin-bottom: 2px;
+                transition: all 0.15s ease-in-out;
+            }
+
+                .sidebar-nav-item i {
+                    font-size: 1.15rem;
+                    margin-right: 0.75rem;
+                    color: #64748B;
+                    transition: color 0.15s ease;
+                    width: 22px;
+                    text-align: center;
+                }
+
+                .sidebar-nav-item:hover {
+                    background-color: var(--surface);
+                    color: var(--primary);
+                }
+
+                    .sidebar-nav-item:hover i {
+                        color: var(--primary);
+                    }
+
+                .sidebar-nav-item.active {
+                    background-color: var(--primary-light);
+                    color: var(--primary);
+                    font-weight: 600;
+                }
+
+                    .sidebar-nav-item.active i {
+                        color: var(--primary);
+                    }
+
+            .nav-badge {
+                font-size: 0.72rem;
+                padding: 0.2rem 0.55rem;
+                border-radius: 20px;
+                font-weight: 600;
+            }
+
+            .nav-badge-primary {
+                background: var(--primary);
+                color: #fff;
+            }
+
+            .nav-badge-subtle {
+                background: #E2E8F0;
+                color: #475569;
+            }
+
+            /* Sidebar Footer User Info */
+            .sidebar-footer {
+                padding: 1rem 1.25rem;
+                border-top: 1px solid var(--border-color);
+                background: #fff;
+            }
+
+            .user-profile-snippet {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                text-decoration: none;
+                color: inherit;
+                padding: 0.5rem;
+                border-radius: 10px;
+                transition: background-color 0.15s ease;
+            }
+
+                .user-profile-snippet:hover {
+                    background-color: var(--surface);
+                }
+
+            .user-avatar {
+                width: 40px;
+                height: 40px;
+                border-radius: 10px;
+                background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 600;
+                font-size: 0.95rem;
+            }
+
+            .user-meta-name {
+                font-size: 0.88rem;
+                font-weight: 600;
+                line-height: 1.2;
+                color: var(--text-main);
+            }
+
+            .user-meta-email {
+                font-size: 0.75rem;
+                color: var(--text-muted);
+            }
+
+            /* Main Content Area */
+            .app-main {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                min-width: 0;
+                background-color: var(--surface);
+            }
+
+            /* Topbar */
+            .app-topbar {
+                height: var(--topbar-height);
+                background: var(--card-bg);
+                border-bottom: 1px solid var(--border-color);
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0 2rem;
+                position: sticky;
+                top: 0;
+                z-index: 1010;
+            }
+
+            .topbar-left {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+            }
+
+            .search-input-group {
+                position: relative;
+                width: 380px;
+            }
+
+                .search-input-group i {
+                    position: absolute;
+                    left: 1rem;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    color: #94A3B8;
+                    font-size: 0.95rem;
+                }
+
+                .search-input-group input {
+                    padding-left: 2.6rem;
+                    background-color: #F1F5F9;
+                    border: 1px solid transparent;
+                    border-radius: 10px;
+                    font-size: 0.88rem;
+                    height: 40px;
+                    transition: all 0.2s ease;
+                }
+
+                    .search-input-group input:focus {
+                        background-color: #fff;
+                        border-color: var(--primary);
+                        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+                    }
+
+            .topbar-right {
+                display: flex;
+                align-items: center;
+                gap: 0.85rem;
+            }
+
+            .topbar-icon-btn {
+                width: 40px;
+                height: 40px;
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border: 1px solid var(--border-color);
+                background: #fff;
+                color: #475569;
+                text-decoration: none;
+                position: relative;
+                transition: all 0.15s ease;
+            }
+
+                .topbar-icon-btn:hover {
+                    background-color: #F8FAFC;
+                    color: var(--text-main);
+                    border-color: #CBD5E1;
+                }
+
+            .notification-dot {
+                position: absolute;
+                top: 9px;
+                right: 9px;
+                width: 8px;
+                height: 8px;
+                background-color: #EF4444;
+                border-radius: 50%;
+                border: 2px solid #fff;
+            }
+
+            /* Logout Button */
+            .btn-logout {
+                display: flex;
+                align-items: center;
+                gap: 0.45rem;
+                padding: 0.5rem 1rem;
+                border-radius: 10px;
+                border: 1px solid #FEE2E2;
+                background: #FEF2F2;
+                color: #DC2626;
+                font-size: 0.88rem;
+                font-weight: 600;
+                text-decoration: none;
+                transition: all 0.15s ease;
+            }
+
+                .btn-logout:hover {
+                    background: #FEE2E2;
+                    color: #B91C1C;
+                    border-color: #FCA5A5;
+                    transform: translateY(-1px);
+                }
+
+            /* Razor Layout Body Container (@@RenderBody() ) */
+            .app-content-body {
+                padding: 2rem;
+                flex: 1;
+            }
+
+            /* Placeholder / RenderBody Banner & Card */
+            .render-body-wrapper {
+                background: var(--card-bg);
+                border: 1px solid var(--border-color);
+                border-radius: 16px;
+                padding: 2.25rem;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+            }
+
+            .mvc-badge {
+                font-family: 'JetBrains Mono', monospace;
+                font-size: 0.78rem;
+                background: #EEF2FF;
+                color: #4F46E5;
+                padding: 0.35rem 0.75rem;
+                border-radius: 8px;
+                border: 1px solid #C7D2FE;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.4rem;
+            }
+
+            .code-pill {
+                font-family: 'JetBrains Mono', monospace;
+                background: #F1F5F9;
+                color: #0F172A;
+                padding: 0.2rem 0.5rem;
+                border-radius: 6px;
+                font-size: 0.85rem;
+                border: 1px solid #E2E8F0;
+            }
+
+            .placeholder-content-box {
+                border: 2px dashed #CBD5E1;
+                border-radius: 14px;
+                padding: 3rem 2rem;
+                background: #FAFCFF;
+                text-align: center;
+            }
+
+            .placeholder-icon {
+                width: 64px;
+                height: 64px;
+                border-radius: 50%;
+                background: #EEF2FF;
+                color: #4F46E5;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.8rem;
+                margin-bottom: 1.25rem;
+            }
+
+            /* Section Pills for Next Steps */
+            .menu-route-item {
+                background: #FFFFFF;
+                border: 1px solid #E2E8F0;
+                border-radius: 12px;
+                padding: 0.85rem 1.15rem;
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                font-size: 0.88rem;
+                color: #334155;
+                transition: all 0.2s ease;
+            }
+
+                .menu-route-item:hover {
+                    border-color: #4F46E5;
+                    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.08);
+                    transform: translateY(-2px);
+                }
+
+                .menu-route-item i {
+                    font-size: 1.1rem;
+                    color: #4F46E5;
+                }
+    </style>
+    <meta content="web_dashboard" name="shell-type" />
+</head>
+<body>
+    <div class="">
+        <!-- SIDEBAR (Layout.cshtml Sol Menü) -->
+        <!-- SAĞ ANA ALAN (Topbar + @@RenderBody()) -->
+        <main class="container-fluid">
+            <div class="flex flex-col w-full">
+                <div class="p-3 p-md-4">
+                    <!-- 1. Üst Karşılama ve Metrik Kartları -->
+                    <div class="row g-3 align-items-center mb-4">
+                        <div class="col-lg-6 col-12">
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <h1 class="h3 fw-bold mb-0 text-dark">Merhaba @ViewBag.fullName 👋</h1>
+                                <span class="badge rounded-pill bg-primary-subtle text-primary fw-semibold px-2.5 py-1">Çevrimiçi</span>
+                            </div>
+                            <p class="text-muted mb-0 small">IdentityMail gelen kutunuzda okunmayı bekleyen iletileriniz var.</p>
+                        </div>
+                        <div class="col-lg-6 col-12">
+                            <div class="row g-2 justify-content-lg-end">
+                                <!-- Toplam Mesaj -->
+                                <div class="col-sm-4 col-12">
+                                    <div class="bg-white rounded-3 p-3 shadow-sm d-flex align-items-center gap-3">
+                                        <div class="rounded-3 bg-light d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px;">
+                                            <i class="bi bi-envelope text-secondary fs-5"></i>
+                                        </div>
+                                        <div class="min-w-0">
+                                            <div class="text-muted small lh-1">Toplam</div>
+                                            <div class="fw-bold fs-6 text-dark mt-1">@ViewBag.TotalMessagesCount<span class="fw-normal text-muted small">İleti</span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Okunmamış Mesaj -->
+                                <div class="col-sm-4 col-12">
+                                    <div class="bg-white rounded-3 p-3 shadow-sm d-flex align-items-center gap-3">
+                                        <div class="rounded-3 bg-primary-subtle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px;">
+                                            <i class="bi bi-envelope-open-fill text-primary fs-5"></i>
+                                        </div>
+                                        <div class="min-w-0">
+                                            <div class="text-muted small lh-1">Okunmamış</div>
+                                            <div class="fw-bold fs-6 text-primary mt-1">@ViewBag.UnreadMessagesCount <span class="fw-normal text-muted small">Yeni</span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Önemli Mesaj -->
+                                <div class="col-sm-4 col-12">
+                                    <div class="bg-white rounded-3 p-3 shadow-sm d-flex align-items-center gap-3">
+                                        <div class="rounded-3 bg-warning-subtle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px;">
+                                            <i class="bi bi-star-fill text-warning fs-5"></i>
+                                        </div>
+                                        <div class="min-w-0">
+                                            <div class="text-muted small lh-1">Önemli</div>
+                                            <div class="fw-bold fs-6 text-warning mt-1">@ViewBag.ImportantMessageCount <span class="fw-normal text-muted small">İşaretli</span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 2. Detaylı Arama ve Filtreleme Çubuğu -->
+                    <div class="card p-3 mb-3 bg-white shadow-sm rounded-3">
+                        <form class="row g-2 align-items-center" id="filterForm" onsubmit="event.preventDefault();">
+                            <!-- Gönderen -->
+                            <div class="col-xl-3 col-md-6 col-12">
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text bg-light text-muted"><i class="bi bi-person"></i></span>
+                                    <input aria-label="Gönderen adı" class="form-control" id="filterSender" placeholder="Gönderen adı veya unvan..." type="text" />
+                                </div>
+                            </div>
+                            <!-- Konu -->
+                            <div class="col-xl-3 col-md-6 col-12">
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text bg-light text-muted"><i class="bi bi-chat-left-text"></i></span>
+                                    <input aria-label="Konu" class="form-control" id="filterSubject" placeholder="Konu veya anahtar kelime..." type="text" />
+                                </div>
+                            </div>
+                            <!-- Kategori -->
+                            <div class="col-xl-2 col-md-4 col-6">
+                                <select aria-label="Kategori seçin" class="form-select form-select-sm text-secondary" id="filterCategory">
+                                    <option selected="" value="">Tüm Kategoriler</option>
+                                    <option value="İş">İş</option>
+                                    <option value="Güvenlik">Güvenlik</option>
+                                    <option value="Finans">Finans</option>
+                                    <option value="Sistem">Sistem</option>
+                                    <option value="Kişisel">Kişisel</option>
+                                </select>
+                            </div>
+                            <!-- Tarih -->
+                            <div class="col-xl-2 col-md-4 col-6">
+                                <input class="form-control form-control-sm text-secondary" id="filterDate" title="Tarih filtresi" type="date" />
+                            </div>
+                            <!-- Butonlar -->
+                            <div class="col-xl-2 col-md-4 col-12 d-flex gap-2">
+                                <button class="btn btn-sm btn-primary w-100 fw-semibold d-flex align-items-center justify-content-center gap-1" id="btnFilter" type="button">
+                                    <i class="bi bi-funnel-fill"></i> Filtrele
+                                </button>
+                                <button class="btn btn-sm btn-light text-muted w-100 fw-semibold d-flex align-items-center justify-content-center gap-1" id="btnReset" type="reset">
+                                    <i class="bi bi-arrow-counterclockwise"></i> Temizle
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- 3. Hızlı Filtreleme Sekmeleri & Toplu Eylemler -->
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
+                        <!-- Sekmeler -->
+                        <div class="nav nav-pills gap-1 p-1 bg-white rounded-3 shadow-sm d-inline-flex">
+                            <a class="nav-link px-3 py-1.5 rounded-2 d-flex align-items-center gap-2 text-decoration-none fw-medium btn @(ViewBag.CurrentFilter == "all" ? "btn-primary active" : "btn-outline-primary")" asp-action="Index" asp-route-filter="all">
+                                <i class="bi bi-inbox-fill @(ViewBag.CurrentFilter=="all"?"text-white":"text-muted")"></i>
+                                <span class="@(ViewBag.CurrentFilter=="all"?"text-white":"text-muted")">Tüm Mesajlar</span>
+                                <span class="badge bg-secondary-subtle text-dark rounded-pill px-2">@ViewBag.TotalMessagesCount</span>
+                            </a>
+                            <a class="nav-link px-3 py-1.5 rounded-2 d-flex align-items-center gap-2 text-decoration-none fw-medium text-muted btn @(ViewBag.CurrentFilter == "unread" ? "btn-primary active" : "btn-outline-primary")" asp-action="Index" asp-route-filter="unread">
+                                <i class="bi bi-circle-fill @(ViewBag.CurrentFilter=="unread"?"text-white":"text-muted")" style="font-size: 8px;"></i>
+                                <span class="@(ViewBag.CurrentFilter=="unread"?"text-white":"text-muted")">Okunmayanlar</span>
+                                <span class="badge bg-light text-muted rounded-pill px-2">@ViewBag.UnreadMessagesCount</span>
+                            </a>
+                            <a class="nav-link px-3 py-1.5 rounded-2 d-flex align-items-center gap-2 text-decoration-none fw-medium text-muted btn @(ViewBag.CurrentFilter == "read" ? "btn-primary active" : "btn-outline-primary")" asp-action="Index" asp-route-filter="read">
+                                <i class="bi bi-envelope-check @(ViewBag.CurrentFilter=="read"?"text-white":"text-muted")"></i>
+                                <span class="@(ViewBag.CurrentFilter=="read"?"text-white":"text-muted")">Okunanlar</span>
+                                <span class="badge bg-light rounded-pill px-2 text-muted">@ViewBag.ReadMessagesCount</span>
+                            </a>
+                        </div>
+                    </div>
+                    <!-- 4. Gelen Mesajlar Tablosu -->
+                    <div class="card shadow-sm rounded-3 overflow-hidden mb-3 bg-white">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0 text-nowrap" id="inboxTable">
+                                <thead class="table-light text-muted small text-uppercase">
+                                    <tr>
+                                        <th class="text-center" scope="col" style="width: 36px;">
+                                            <i class="bi bi-star"></i>
+                                        </th>
+                                        <th class="text-center" scope="col" style="width: 32px;">Durum</th>
+                                        <th scope="col" style="min-width: 170px;">Gönderen</th>
+                                        <th scope="col" style="min-width: 160px;">E-Posta</th>
+                                        <th scope="col" style="min-width: 280px; width: 40%;">Konu</th>
+                                        <th scope="col" style="min-width: 110px;">Kategori</th>
+                                        <th class="text-end" scope="col" style="min-width: 110px;">Tarih</th>
+                                        <th class="text-end pe-3" scope="col" style="width: 110px;">İşlemler</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- 1. Satır: Okunmamış & Önemli -->
+                                    @foreach (var msg in Model)
+                                    {
+                                        <tr class="table-primary-subtle fw-semibold align-middle cursor-pointer" data-category="Güvenlik" data-status="unread">
+                                        <td class="text-center">
+                                            <a class="btn btn-link p-0 text-warning text-decoration-none toggle-star" title="Önemli İşareti" asp-controller="Message" asp-action="MailImportantStar" asp-route-id="@msg.Id" asp-route-returnUrl="@(Context.Request.Path + Context.Request.QueryString)">
+                                                <i class="bi @(msg.IsImportant==true?"bi-star-fill":"bi-star")"></i>
+                                            </a>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="d-inline-block rounded-circle @(msg.IsRead==true?"bg-light" : "bg-primary")" style="width: 9px; height: 9px;" title="@(msg.IsRead==true?"Okunmuş" : "Okunmamış")""></span>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <div class="rounded-circle bg-danger-subtle text-danger fw-bold d-flex align-items-center justify-content-center flex-shrink-0" style="width: 30px; height: 30px; font-size: 11px;">
+                                                    @msg.Sender.FirstName[0]@msg.Sender.LastName[0]
+                                                </div>
+                                                <span class="text-dark">@msg.Sender.FirstName @msg.Sender.LastName</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="small font-monospace text-muted">@msg.Sender.Email</span>
+                                        </td>
+                                        <td>
+                                            <div class="text-truncate" style="max-width: 440px;">
+                                                <span class="text-dark">@(msg.Subject.Length > 58 ? msg.Subject.Substring(0, 58) + "..." : msg.Subject)</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-danger-subtle text-danger px-2 py-1 rounded-pill">@(msg.Category?.Name??"Kategorisiz")</span>
+                                        </td>
+                                        <td class="text-end text-dark small">
+                                            @FormatMessageDate(msg.SendDate)
+                                        </td>
+                                        <td class="text-end pe-3">
+                                            <div class="d-inline-flex gap-1">
+                                                <a class="btn btn-sm btn-outline-primary rounded-pill px-2.5 py-0.5" title="Yanıtla" href="/Message/MailDetail/@msg.Id">
+                                                    <i class="bi bi-file-text"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>    
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- 5. Sayfalama ve Bilgi Çubuğu -->
+                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2 px-1">
+                        @if (totalPages > 1)
+                        {
+                            <nav>
+                                <ul class="pagination justify-content-center">
+
+                                    <!-- Önceki butonu -->
+                                    <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                                        <a class="page-link" asp-action="Index" asp-route-filter="@ViewBag.CurrentFilter" asp-route-page="@(currentPage - 1)">«</a>
+                                    </li>
+
+                                    <!-- İlk sayfa + "..." (eğer başlangıç 1'den uzaksa) -->
+                                    @if (startPage > 1)
+                                    {
+                                        <li class="page-item">
+                                            <a class="page-link" asp-action="Index" asp-route-filter="@ViewBag.CurrentFilter" asp-route-page="1">1</a>
+                                        </li>
+                                        @if (startPage > 2)
+                                        {
+                                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                                        }
+                                    }
+
+                                    <!-- Ortadaki sayfa numaraları -->
+                                    @for (int i = startPage; i <= endPage; i++)
+                                    {
+                                        <li class="page-item @(i == currentPage ? "active" : "")">
+                                            <a class="page-link" asp-action="Index" asp-route-filter="@ViewBag.CurrentFilter" asp-route-page="@i">@i</a>
+                                        </li>
+                                    }
+
+                                    <!-- "..." + son sayfa (eğer bitiş, son sayfadan uzaksa) -->
+                                    @if (endPage < totalPages)
+                                    {
+                                        @if (endPage < totalPages - 1)
+                                        {
+                                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                                        }
+                                        <li class="page-item">
+                                            <a class="page-link" asp-action="Index" asp-route-filter="@ViewBag.CurrentFilter" asp-route-page="@totalPages">@totalPages</a>
+                                        </li>
+                                    }
+
+                                    <!-- Sonraki butonu -->
+                                    <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                                        <a class="page-link" asp-action="Index" asp-route-filter="@ViewBag.CurrentFilter" asp-route-page="@(currentPage + 1)">»</a>
+                                    </li>
+
+                                </ul>
+                            </nav>
+                        }
+                    </div>
+                </div>
+            </div>
+            <script>
+                            // Toplu Seçim Checkbox Davranışı
+                            const selectAll = document.getElementById('selectAllCheckbox');
+                            const mailCheckboxes = document.querySelectorAll('.mail-check');
+
+                            if (selectAll) {
+                              selectAll.addEventListener('change', function () {
+                                mailCheckboxes.forEach(cb => cb.checked = selectAll.checked);
+                              });
+                            }
+
+                            // Yıldız Aç/Kapat Etkileşimi
+                            document.querySelectorAll('.toggle-star').forEach(btn => {
+                              btn.addEventListener('click', function (e) {
+                                e.stopPropagation();
+                                const icon = this.querySelector('i');
+                                if (icon.classList.contains('bi-star-fill')) {
+                                  icon.classList.remove('bi-star-fill', 'text-warning');
+                                  icon.classList.add('bi-star', 'text-muted');
+                                } else {
+                                  icon.classList.remove('bi-star', 'text-muted');
+                                  icon.classList.add('bi-star-fill', 'text-warning');
+                                }
+                              });
+                            });
+
+                            // Basit Sekme Filtreleme Simülasyonu
+                            const tabAll = document.getElementById('tab-all');
+                            const tabUnread = document.getElementById('tab-unread');
+                            const tabRead = document.getElementById('tab-read');
+                            const rows = document.querySelectorAll('#inboxTable tbody tr');
+
+                            function filterRows(status) {
+                              rows.forEach(r => {
+                                if (!status || status === 'all') {
+                                  r.style.display = '';
+                                } else if (r.getAttribute('data-status') === status) {
+                                  r.style.display = '';
+                                } else {
+                                  r.style.display = 'none';
+                                }
+                              });
+                            }
+
+                            if (tabAll) tabAll.addEventListener('click', () => filterRows('all'));
+                            if (tabUnread) tabUnread.addEventListener('click', () => filterRows('unread'));
+                            if (tabRead) tabRead.addEventListener('click', () => filterRows('read'));
+
+                            // Arama / Kategori Basit Filtre Butonu
+                            const btnFilter = document.getElementById('btnFilter');
+                            const filterSender = document.getElementById('filterSender');
+                            const filterSubject = document.getElementById('filterSubject');
+                            const filterCategory = document.getElementById('filterCategory');
+
+                            if (btnFilter) {
+                              btnFilter.addEventListener('click', () => {
+                                const sVal = (filterSender?.value || '').toLowerCase().trim();
+                                const subVal = (filterSubject?.value || '').toLowerCase().trim();
+                                const catVal = filterCategory?.value || '';
+
+                                rows.forEach(row => {
+                                  const text = row.textContent.toLowerCase();
+                                  const cat = row.getAttribute('data-category') || '';
+                                  const matchText = (!sVal || text.includes(sVal)) && (!subVal || text.includes(subVal));
+                                  const matchCat = (!catVal || cat === catVal);
+                                  row.style.display = (matchText && matchCat) ? '' : 'none';
+                                });
+                              });
+                            }
+
+                            // Temizle Butonu
+                            const btnReset = document.getElementById('btnReset');
+                            if (btnReset) {
+                              btnReset.addEventListener('click', () => {
+                                setTimeout(() => filterRows('all'), 10);
+                              });
+                            }
+            </script>
+        </main>
+    </div>
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body></html>

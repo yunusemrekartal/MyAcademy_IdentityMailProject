@@ -1,0 +1,11 @@
+﻿namespace IdentityMail.Web.DTOs.UserMessagesDtos
+{
+    public class SendMailDto
+    {
+        public string ReceiverMail { get; set; }
+        public string Subject { get; set; }
+        public int? CategoryId { get; set; }
+        public string Body { get; set; }
+
+    }
+}

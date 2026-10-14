@@ -1,0 +1,226 @@
+﻿@model List<UserListItemDto>
+<!doctype html>
+<html lang="tr" style="">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>İstatistikler &amp; Analitik Paneli</title>
+    <!-- Google Font: Inter -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <!-- Bootstrap Icons CDN -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <!-- Tailwind CSS v3 CDN with Forms and Container Queries Plugins -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Tailwind Custom Configuration -->
+    <script data-purpose="tailwind-config">
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+            },
+            colors: {
+              brand: {
+                navy: "#0f172a",
+                blue: "#0284c7",
+                border: "#e2e8f0",
+                muted: "#64748b",
+                surface: "#f8fafc",
+              },
+            },
+          },
+        },
+      };
+    </script>
+    <!-- Custom Styles for Dashboard Refinements -->
+    <style data-purpose="custom-layout">
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f8fafc;
+        color: #0f172a;
+      }
+
+      .stat-card-transition {
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .stat-card-transition:hover {
+        transform: translateY(-2px);
+        box-shadow:
+          0 10px 20px -3px rgba(15, 23, 42, 0.08),
+          0 4px 6px -2px rgba(15, 23, 42, 0.04);
+      }
+    </style>
+  </head>
+  <body class="bg-slate-50 text-slate-900 antialiased">
+    <!-- BEGIN: DashboardBodyContent -->
+    <!-- Container suited for ASP.NET Core MVC @@RenderBody() -->
+    <main
+      class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8"
+      data-purpose="dashboard-container"
+    >
+      <!-- BEGIN: TopStatCardsRow -->
+      <!-- 4-Column Grid mapping to Top Overview Statistics -->
+      <section
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6"
+        data-purpose="statistics-overview-grid"
+      >
+        <!-- Card 1: Kullanıcı Sayısı -->
+        <article
+          class="stat-card-transition bg-white border border-slate-200 rounded-xl p-6 shadow-sm flex flex-col items-center justify-center text-center"
+          data-purpose="stat-card-users"
+        >
+          <!-- Icon element -->
+          <div
+            class="mb-3 text-[#0284c7] text-2xl flex items-center justify-center"
+          >
+            <i class="bi bi-people-fill text-2xl"></i>
+          </div>
+          <!-- Stat Metric -->
+          <h3 class="text-3xl font-bold text-slate-900 tracking-tight mb-1">
+            @ViewBag.TotalUsers
+          </h3>
+          <!-- Stat Label -->
+          <p class="text-xs md:text-sm font-medium text-slate-500">Kullanıcı</p>
+        </article>
+        <!-- Card 2: Mesaj Sayısı -->
+        <article
+          class="stat-card-transition bg-white border border-slate-200 rounded-xl p-6 shadow-sm flex flex-col items-center justify-center text-center"
+          data-purpose="stat-card-messages"
+        >
+          <!-- Icon element -->
+          <div
+            class="mb-3 text-[#0284c7] text-2xl flex items-center justify-center"
+          >
+            <i class="bi bi-envelope-fill text-2xl"></i>
+          </div>
+          <!-- Stat Metric -->
+          <h3 class="text-3xl font-bold text-slate-900 tracking-tight mb-1">
+            @ViewBag.TotalMessageCount
+          </h3>
+          <!-- Stat Label -->
+          <p class="text-xs md:text-sm font-medium text-slate-500">Mesaj</p>
+        </article>
+        <!-- Card 3: Okunmamış / Önemli Mesaj Sayısı -->
+        <article
+          class="stat-card-transition bg-white border border-slate-200 rounded-xl p-6 shadow-sm flex flex-col items-center justify-center text-center"
+          data-purpose="stat-card-unread"
+        >
+          <!-- Icon element -->
+          <div
+            class="mb-3 text-[#0284c7] text-2xl flex items-center justify-center"
+          >
+            <i class="bi bi-envelope-exclamation-fill text-2xl"></i>
+          </div>
+          <!-- Stat Metric -->
+          <h3 class="text-3xl font-bold text-slate-900 tracking-tight mb-1">
+            @ViewBag.TotalUnreadMessageCount
+          </h3>
+          <!-- Stat Label -->
+          <p class="text-xs md:text-sm font-medium text-slate-500">Okunmamış</p>
+        </article>
+        <!-- Card 4: Çöp Kutusu -->
+        <article
+          class="stat-card-transition bg-white border border-slate-200 rounded-xl p-6 shadow-sm flex flex-col items-center justify-center text-center"
+          data-purpose="stat-card-trash"
+        >
+          <!-- Icon element -->
+          <div
+            class="mb-3 text-[#0284c7] text-2xl flex items-center justify-center"
+          >
+            <i class="bi bi-trash3-fill text-2xl"></i>
+          </div>
+          <!-- Stat Metric -->
+          <h3 class="text-3xl font-bold text-slate-900 tracking-tight mb-1">
+            @ViewBag.TotalTrashedDraftCount
+          </h3>
+          <!-- Stat Label -->
+          <p class="text-xs md:text-sm font-medium text-slate-500">Çöp</p>
+        </article>
+      </section>
+      <!-- END: TopStatCardsRow -->
+      <!-- BEGIN: BottomDetailedSections -->
+      <!-- 2-Column Section for Top Senders and Category Usage breakdown -->
+      <section
+        class="grid grid-cols-1 lg:grid-cols-2 gap-6"
+        data-purpose="dashboard-detailed-widgets"
+      >
+        <!-- LEFT CARD: En Çok Gönderenler -->
+        <article
+          class="bg-white border border-slate-200 rounded-xl shadow-sm flex flex-col overflow-hidden"
+          data-purpose="top-senders-card"
+        >
+          <!-- Header -->
+          <div
+            class="px-6 py-4 border-b border-slate-100 flex items-center justify-between"
+          >
+            <h2 class="text-base font-semibold text-slate-900 tracking-tight">
+              En Çok Gönderenler
+            </h2>
+            <span class="text-xs font-medium text-slate-400">İleti Sayısı</span>
+          </div>
+          <!-- Sender List Group -->
+          <div class="divide-y divide-slate-100 flex-1">
+            <!-- Sender Item 1 -->
+            @foreach (var item in Model)
+            {
+                <div class="px-6 py-3.5 flex items-center justify-between hover:bg-slate-50/70 transition-colors">
+                    <div class="flex items-center space-x-3.5">
+                        <div class="w-9 h-9 rounded-full bg-sky-50 border border-sky-100 flex items-center justify-center text-[#0284c7] text-sm font-semibold">
+                            @item.FirstName[0]@item.LastName[0]
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-slate-900 leading-tight">
+                                @item.UserName
+                            </p>
+                            <p class="text-xs text-slate-500 leading-tight">
+                                @item.Email
+                            </p>
+                        </div>
+                    </div>
+                    <span class="inline-flex items-center justify-center min-w-[28px] h-7 px-2 bg-[#0284c7] text-white text-xs font-semibold rounded-full shadow-sm">
+                        @item.SentMessageCount
+                    </span>
+                </div>
+            }
+          </div>
+        </article>
+        <!-- RIGHT CARD: En Çok Kullanılan Kategoriler -->
+        <article
+          class="bg-white border border-slate-200 rounded-xl shadow-sm flex flex-col justify-between overflow-hidden"
+          data-purpose="top-categories-card"
+        >
+          <!-- Header -->
+          <div
+            class="px-6 py-4 border-b border-slate-100 flex items-center justify-between"
+          >
+            <h2 class="text-base font-semibold text-slate-900 tracking-tight">
+              En Çok Kullanılan Kategoriler
+            </h2>
+          </div>
+          <!-- Categories Visual Representation & Progress List -->
+          <div class="p-6 flex-1 flex flex-col space-y-4">
+            <div class="divide-y divide-slate-100 -my-2">
+              @foreach (var category in ViewBag.TotalCategories)
+              {
+                <div class="py-3 flex items-center space-x-3">
+                    <span class="inline-block w-2.5 h-2.5 rounded-full bg-sky-500"></span><span class="text-sm font-medium text-slate-800">@category</span>
+                </div>
+              }
+            </div>
+          </div>
+        </article>
+      </section>
+      <!-- END: BottomDetailedSections -->
+    </main>
+    <!-- END: DashboardBodyContent -->
+  </body>
+</html>

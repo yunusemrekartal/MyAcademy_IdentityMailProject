@@ -1,0 +1,143 @@
+﻿@model UserInfoEditDto
+<div
+    class="card card-identity p-4"
+    data-purpose="personal-information-section">
+            <div
+              class="d-flex align-items-center justify-content-between pb-3 mb-4 border-bottom"
+            >
+              <div class="d-flex align-items-center gap-2">
+                <div class="p-2 bg-indigo-50 text-indigo-600 rounded-lg">
+                  <i class="bi bi-person-lines-fill fs-5"></i>
+                </div>
+                <div>
+                  <h2 class="h5 fw-bold mb-0 text-slate-800">
+                    Kişisel Bilgiler
+                  </h2>
+                  <p class="text-muted small mb-0">
+                    Genel profil bilgilerinizi ve iletişim detaylarınızı
+                    güncelleyin
+                  </p>
+                </div>
+              </div>
+            </div>
+            <form data-purpose="personal-details-form" method="post" asp-controller="UserProfile" asp-action="UserInfoSaveChanges">
+              <div class="row g-3">
+                <!-- Ad (First Name) -->
+                <div class="col-12 col-md-6">
+                  <label
+                    class="form-label text-slate-700 fw-semibold text-sm"
+                    for="firstNameInput"
+                    >Ad <span class="text-danger">*</span></label
+                  >
+                  <div class="input-group">
+                    <span
+                      class="input-group-text bg-slate-50 text-muted border-end-0"
+                      ><i class="bi bi-person"></i
+                    ></span>
+                    <input
+                      class="form-control border-start-0"
+                      id="firstNameInput"
+                      name="FirstName"
+                      placeholder="Adınız"
+                      required=""
+                      type="text"
+                      value="@Model.FirstName"
+                    />
+                  </div>
+                </div>
+                <!-- Soyad (Last Name) -->
+                <div class="col-12 col-md-6">
+                  <label
+                    class="form-label text-slate-700 fw-semibold text-sm"
+                    for="lastNameInput"
+                    >Soyad <span class="text-danger">*</span></label
+                  >
+                  <div class="input-group">
+                    <span
+                      class="input-group-text bg-slate-50 text-muted border-end-0"
+                      ><i class="bi bi-person"></i
+                    ></span>
+                    <input
+                      class="form-control border-start-0"
+                      id="lastNameInput"
+                      name="LastName"
+                      placeholder="Soyadınız"
+                      required=""
+                      type="text"
+                      value="@Model.LastName"
+                    />
+                  </div>
+                </div>
+                <!-- Kullanıcı Adı (Username) -->
+                <div class="col-12 col-md-6">
+                  <label
+                    class="form-label text-slate-700 fw-semibold text-sm"
+                    for="UserName"
+                    >Kullanıcı Adı</label
+                  >
+                  <div class="input-group">
+                    <span
+                      class="input-group-text bg-slate-50 text-muted border-end-0"
+                      >@@</span
+                    >
+                    <input
+                      class="form-control border-start-0 bg-slate-50 text-slate-600"
+                      id="UserName"
+                      name="UserName"
+                      type="text"
+                      value="@Model.UserName"
+                    />
+                    <span class="input-group-text bg-slate-50 border-start-0">
+                      <i
+                        class="bi bi-lock-fill text-muted"
+                        title="Kullanıcı adı değiştirilemez"
+                      ></i>
+                    </span>
+                  </div>
+                </div>
+                <!-- E-Posta Adresi (Email) -->
+                <div class="col-12 col-md-6">
+                  <label
+                      class="form-label text-slate-700 fw-semibold text-sm"
+                      for="emailInput"
+                      >E-Posta Adresi</label
+                    >
+                  <div class="input-group">
+                    <span
+                      class="input-group-text bg-slate-50 text-muted border-end-0"
+                      ><i class="bi bi-envelope"></i
+                    ></span>
+                    <input
+                      class="form-control border-start-0 bg-slate-50 text-slate-600"
+                      id="emailInput"
+                      name="Mail"
+                      type="email"
+                      value="@Model.Mail"
+                    />
+                  </div>
+                </div>
+              </div>
+              <!-- Submit Button -->
+              <div
+                class="d-flex justify-content-end align-items-center gap-2 mt-4 pt-3 border-top"
+              >
+                <button class="btn btn-light text-slate-600 px-4" type="button">
+                  Vazgeç
+                </button>
+                <button
+                  class="btn btn-idmail-primary px-4 d-inline-flex align-items-center gap-2 shadow-sm"
+                  type="submit"
+                >
+                  <i class="bi bi-check-lg fs-6"></i> Bilgileri Güncelle
+                </button>
+              </div>
+            </form>
+            <!-- Hata Mesajları -->
+             <div class="col-12 mt-2">
+                  <div
+                    class="p-3 bg-slate-50 rounded-3 border border-slate-100"
+                  >
+                        <div asp-validation-summary="All" class="text-danger"></div>
+                  </div>
+                </div>
+          </div>

@@ -1,0 +1,199 @@
+﻿@model UserProfilePageDto
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Custom Styling to harmonize with IdentityMail Design System -->
+    <style data-purpose="theme-variables">
+      :root {
+        --idmail-primary: #4f46e5;
+        --idmail-primary-hover: #4338ca;
+        --idmail-primary-light: #eef2ff;
+        --idmail-primary-ring: rgba(79, 70, 229, 0.15);
+        --idmail-border: #e2e8f0;
+        --idmail-card-bg: #ffffff;
+        --idmail-text-main: #1e293b;
+        --idmail-text-muted: #64748b;
+      }
+    </style>
+    <style data-purpose="custom-overrides">
+      .profile-wrapper {
+        font-family:
+          "Inter",
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Roboto,
+          sans-serif;
+        color: var(--idmail-text-main);
+      }
+      .card-identity {
+        background-color: var(--idmail-card-bg);
+        border: 1px solid var(--idmail-border);
+        border-radius: 1rem;
+        box-shadow:
+          0 1px 3px 0 rgba(0, 0, 0, 0.04),
+          0 1px 2px 0 rgba(0, 0, 0, 0.02);
+      }
+      .form-control:focus,
+      .form-select:focus {
+        border-color: var(--idmail-primary);
+        box-shadow: 0 0 0 0.25rem var(--idmail-primary-ring);
+      }
+      .btn-idmail-primary {
+        background-color: var(--idmail-primary);
+        border-color: var(--idmail-primary);
+        color: #ffffff;
+        font-weight: 500;
+      }
+      .btn-idmail-primary:hover,
+      .btn-idmail-primary:active {
+        background-color: var(--idmail-primary-hover) !important;
+        border-color: var(--idmail-primary-hover) !important;
+        color: #ffffff !important;
+      }
+      .avatar-circle {
+        width: 110px;
+        height: 110px;
+        background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
+        color: #ffffff;
+        font-size: 2.25rem;
+        font-weight: 700;
+      }
+      .subtle-badge-primary {
+        background-color: #eef2ff;
+        color: #4f46e5;
+      }
+      .subtle-badge-success {
+        background-color: #ecfdf5;
+        color: #059669;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="profile-wrapper w-100 py-2">
+        @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    @TempData["SuccessMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+      <!-- BEGIN: PageHeader -->
+      <!-- Top Title and Subtitle Block matching SCREEN_2 and SCREEN_3 structure -->
+      <header
+        class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center pb-4 mb-2 gap-3"
+        data-purpose="page-header"
+      >
+        <div>
+          <div class="d-flex align-items-center gap-2 mb-1">
+            <h1 class="h3 fw-bold mb-0 text-slate-900 tracking-tight">
+              Kullanıcı Profili
+            </h1>
+            <span class="fs-4">👤</span>
+            <span
+              class="badge subtle-badge-primary px-2.5 py-1.5 rounded-full fw-medium fs-7 ms-1"
+            >
+              <i class="bi bi-shield-check me-1"></i>Güvenlik &amp; Profil
+            </span>
+          </div>
+          <p class="text-secondary mb-0 fs-6">
+            Kişisel bilgilerinizi güncelleyin, profil fotoğrafınızı yönetin ve
+            hesap güvenliğinizi sağlayın.
+          </p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <span
+            class="badge bg-white text-secondary border px-3 py-2 rounded-pill shadow-xs d-inline-flex align-items-center gap-1.5 fw-normal fs-7"
+          >
+            <span
+              class="inline-block w-2 h-2 rounded-full bg-emerald-500"
+            ></span>
+            Zero-Knowledge Kimlik Doğrulama Aktif
+          </span>
+        </div>
+      </header>
+      <!-- END: PageHeader -->
+      <!-- BEGIN: MainContentGrid -->
+      <div class="row g-4" data-purpose="profile-content-grid">
+        <!-- BEGIN: LeftSidebarCard -->
+        <!-- Avatar and Account Metadata Summary -->
+        @await Component.InvokeAsync("UserProfileImage",new{imageUrl=Model.ProfileImageEdit.ProfileImageUrl})
+        <!-- END: LeftSidebarCard -->
+        <!-- BEGIN: RightMainColumn -->
+        <!-- Forms Container for Personal Info and Password Change -->
+        @await Component.InvokeAsync("UserInfo",new{userInfoModel=Model})
+        <!-- END: RightMainColumn -->
+      </div>
+      <!-- END: MainContentGrid -->
+    </div>
+    <!-- Bootstrap 5 JavaScript Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Interactive Behaviors: Password Toggle & File Preview -->
+    <script data-purpose="profile-page-interactions">
+      // Toggle password visibility
+      function togglePasswordVisibility(inputId, triggerBtn) {
+        const inputField = document.getElementById(inputId);
+        const icon = triggerBtn.querySelector("i");
+        if (!inputField || !icon) return;
+
+        if (inputField.type === "password") {
+          inputField.type = "text";
+          icon.classList.remove("bi-eye");
+          icon.classList.add("bi-eye-slash");
+        } else {
+          inputField.type = "password";
+          icon.classList.remove("bi-eye-slash");
+          icon.classList.add("bi-eye");
+        }
+      }
+    </script>
+    <script>
+    const defaultImagePath = "/images/profiles/default.jpg";
+
+    function previewImage(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        // Yeni dosya seçildiyse "kaldırma" isteği geçersiz olur
+        document.getElementById('removePhotoInput').value = "false";
+
+        const reader = new FileReader();
+        reader.onload = function () {
+            document.getElementById('previewImg').src = reader.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function removeProfilePhoto() {
+        console.log("removePhoto çalıştı!");   // <-- test satırı
+        // Ekrandaki resmi default yap
+        document.getElementById('previewImg').src = defaultImagePath;
+
+        // Kullanıcı daha önce dosya seçmiş olabilir, onu iptal et
+        document.getElementById('fileInput').value = "";
+
+        // Sunucuya "kaldır" isteğini bildir
+        document.getElementById('removePhotoInput').value = "true";
+    }
+</script>
+    <!-- END: UserProfileView -->
+  </body>
+</html>

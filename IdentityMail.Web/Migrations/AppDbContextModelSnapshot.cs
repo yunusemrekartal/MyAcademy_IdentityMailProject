@@ -131,6 +131,26 @@ namespace IdentityMail.Web.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("IdentityMail.Web.Entities.MessageCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MessageCategories");
+                });
+
             modelBuilder.Entity("IdentityMail.Web.Entities.UserMessage", b =>
                 {
                     b.Property<int>("Id")
@@ -143,10 +163,19 @@ namespace IdentityMail.Web.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDraft")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsImportant")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsTrashed")
                         .HasColumnType("bit");
 
                     b.Property<int>("ReceiverId")
@@ -162,7 +191,12 @@ namespace IdentityMail.Web.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("TrashedDate")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
 
                     b.HasIndex("ReceiverId");
 
@@ -276,6 +310,11 @@ namespace IdentityMail.Web.Migrations
 
             modelBuilder.Entity("IdentityMail.Web.Entities.UserMessage", b =>
                 {
+                    b.HasOne("IdentityMail.Web.Entities.MessageCategory", "Category")
+                        .WithMany("Messages")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("IdentityMail.Web.Entities.AppUser", "Receiver")
                         .WithMany("ReceivedMessages")
                         .HasForeignKey("ReceiverId")
@@ -287,6 +326,8 @@ namespace IdentityMail.Web.Migrations
                         .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Category");
 
                     b.Navigation("Receiver");
 
@@ -349,6 +390,11 @@ namespace IdentityMail.Web.Migrations
                     b.Navigation("ReceivedMessages");
 
                     b.Navigation("SentMessages");
+                });
+
+            modelBuilder.Entity("IdentityMail.Web.Entities.MessageCategory", b =>
+                {
+                    b.Navigation("Messages");
                 });
 #pragma warning restore 612, 618
         }

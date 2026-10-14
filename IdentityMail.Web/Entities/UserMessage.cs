@@ -12,7 +12,11 @@
         public int SenderId { get; set; }
         public AppUser Receiver { get; set; }
         public int ReceiverId { get; set; }
-
+        public bool IsDraft { get; set; }
+        public bool IsTrashed { get; set; }
+        public DateTime? TrashedDate { get; set; }
+        public int? CategoryId { get; set; }
+        public MessageCategory? Category { get; set; }
 
     }
 }

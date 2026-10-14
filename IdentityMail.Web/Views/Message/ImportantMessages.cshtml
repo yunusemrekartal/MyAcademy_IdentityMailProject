@@ -1,0 +1,79 @@
+﻿@model List<UserMessage>
+@functions {
+    string FormatMessageDate(DateTime tarih)
+    {
+        if (tarih.Date == DateTime.Today)
+            return $"Bugün, {tarih:HH:mm}";
+
+        if (tarih.Date == DateTime.Today.AddDays(-1))
+            return $"Dün, {tarih:HH:mm}";
+
+        return tarih.ToString("dd.MM.yyyy, HH:mm");
+    }
+} 
+<!-- 4. Gelen Mesajlar Tablosu -->
+<div class="card shadow-sm rounded-3 overflow-hidden mb-3 bg-white">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0 text-nowrap" id="inboxTable">
+            <thead class="table-light text-muted small text-uppercase">
+                <tr>
+                    <th class="text-center" scope="col" style="width: 36px;">
+                        <i class="bi bi-star"></i>
+                    </th>
+                    <th class="text-center" scope="col" style="width: 32px;">Durum</th>
+                    <th scope="col" style="min-width: 170px;">Gönderen</th>
+                    <th scope="col" style="min-width: 160px;">E-Posta</th>
+                    <th scope="col" style="min-width: 280px; width: 40%;">Konu</th>
+                    <th scope="col" style="min-width: 110px;">Kategori</th>
+                    <th class="text-end" scope="col" style="min-width: 110px;">Tarih</th>
+                    <th class="text-end pe-3" scope="col" style="width: 110px;">İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 1. Satır: Okunmamış & Önemli -->
+                @foreach (var msg in Model)
+                {
+                    <tr class="table-primary-subtle fw-semibold align-middle cursor-pointer" data-category="Güvenlik" data-status="unread">
+                    <td class="text-center">
+                        <a class="btn btn-link p-0 text-warning text-decoration-none toggle-star" title="Önemli İşareti" asp-controller="Message" asp-action="MailImportantStar" asp-route-id="@msg.Id" asp-route-returnUrl="@(Context.Request.Path + Context.Request.QueryString)">
+                            <i class="bi @(msg.IsImportant==true?"bi-star-fill":"bi-star")"></i>
+                        </a>
+                    </td>
+                    <td class="text-center">
+                        <span class="d-inline-block rounded-circle @(msg.IsRead==true?"bg-light" : "bg-primary")" style="width: 9px; height: 9px;" title="@(msg.IsRead==true?"Okunmuş" : "Okunmamış")""></span>
+                    </td>
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="rounded-circle bg-danger-subtle text-danger fw-bold d-flex align-items-center justify-content-center flex-shrink-0" style="width: 30px; height: 30px; font-size: 11px;">
+                                @msg.Sender.FirstName[0]@msg.Sender.LastName[0]
+                            </div>
+                            <span class="text-dark">@msg.Sender.FirstName @msg.Sender.LastName</span>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="small font-monospace text-muted">@msg.Sender.Email</span>
+                    </td>
+                    <td>
+                        <div class="text-truncate" style="max-width: 440px;">
+                            <span class="text-dark">@(msg.Subject.Length > 58 ? msg.Subject.Substring(0, 58) + "..." : msg.Subject)</span>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="badge bg-danger-subtle text-danger px-2 py-1 rounded-pill">@(msg.Category?.Name??"Kategorisiz")</span>
+                    </td>
+                    <td class="text-end text-dark small">
+                        @FormatMessageDate(msg.SendDate)
+                    </td>
+                    <td class="text-end pe-3">
+                        <div class="d-inline-flex gap-1">
+                            <a class="btn btn-sm btn-outline-primary rounded-pill px-2.5 py-0.5" title="Yanıtla" href="/Message/MailDetail/@msg.Id">
+                                <i class="bi bi-file-text"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>    
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

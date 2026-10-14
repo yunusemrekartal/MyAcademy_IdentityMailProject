@@ -1,0 +1,23 @@
+﻿@model UserProfilePageDto 
+<div class="col-12 col-lg-8 col-xl-9 d-flex flex-column gap-4">
+          <!-- Feedback Alert Banner -->
+          <div
+            class="alert alert-light border border-slate-200 rounded-3 d-flex align-items-center gap-3 py-2.5 px-3 mb-0 shadow-xs"
+            data-purpose="system-info-alert"
+            role="alert"
+          >
+            <i class="bi bi-info-circle-fill text-indigo-600 fs-5"></i>
+            <div class="text-slate-600 small">
+              Yapılan güncellemeler tüm
+              <strong>IdentityMail</strong> hizmetlerinde anında senkronize
+              edilecektir.
+            </div>
+          </div>
+          <!-- BEGIN: PersonalInformationCard -->
+          @await Html.PartialAsync("~/Views/Shared/Partials/_UserInformationPartial.cshtml",Model.UserInfoEdit)
+          <!-- END: PersonalInformationCard -->
+          <!-- BEGIN: PasswordSecurityCard -->
+         @await Html.PartialAsync("~/Views/Shared/Partials/_PasswordPartial.cshtml",Model.UserPasswordEdit)
+          <!-- END: PasswordSecurityCard -->
+        </div>
+        <!-- END: RightMainColumn -->
